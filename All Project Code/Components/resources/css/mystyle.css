@@ -1,0 +1,34 @@
+body {
+  background-color: #8fadbf;
+  font-family: Verdana, sans-serif;
+}
+
+nav {
+  background-color: #183140;
+}
+
+div.searchbar {
+  vertical-align: middle;
+}
+input.search-input {
+  border-radius: 30px 0px 0px 30px;
+  border-width: thin;
+  border-color: #566873;
+}
+select {
+  text-align-last: center;
+  }
+  .search-option {
+  border-radius: 0px;
+  border-width: thin;
+  border-color: #566873;
+}
+button.search-button {
+  border-radius: 0px 30px 30px 0px;
+  background-color: #566873;
+  border-color: #566873;
+
+}
+img.navbar-img {
+  height: 55px;
+}
