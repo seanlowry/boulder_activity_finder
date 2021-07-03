@@ -39,7 +39,7 @@ app.get('/',function(req, res){
         .then(function(data){
             res.render('/pages/login',{
                 title: "login",
-                log: data
+                data: "data"
             })
         })
         .catch(error =>{

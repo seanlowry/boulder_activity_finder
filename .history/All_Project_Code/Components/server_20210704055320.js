@@ -37,9 +37,9 @@ app.get('/',function(req, res){
     var query1 = 'SELECT * FROM users WHERE email = '+ email+';'
     db.any(query1)
         .then(function(data){
-            res.render('/pages/login',{
+            res.render('/pages/hone',{
                 title: "login",
-                log: data
+                data: "data"
             })
         })
         .catch(error =>{

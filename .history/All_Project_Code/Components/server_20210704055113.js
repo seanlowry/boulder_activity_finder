@@ -37,18 +37,16 @@ app.get('/',function(req, res){
     var query1 = 'SELECT * FROM users WHERE email = '+ email+';'
     db.any(query1)
         .then(function(data){
-            res.render('/pages/login',{
-                title: "login",
-                log: data
+            res.render('/pages/hone',{
+                if(data == pass){
+                    console.log("success")
+                }
             })
         })
         .catch(error =>{
             request.flash(("error", error));
-            response.render('/pages/login',{
-                title: "login",
-                
-            })
-        });
+            response.render
+        })
 });
 
 app.listen(3000);

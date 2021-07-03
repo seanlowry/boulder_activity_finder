@@ -1,7 +1,6 @@
 var express = require("express")
 var app = express()
 var bodyParser = require('body-parser')
-const { request, response } = require("express")
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
@@ -37,18 +36,10 @@ app.get('/',function(req, res){
     var query1 = 'SELECT * FROM users WHERE email = '+ email+';'
     db.any(query1)
         .then(function(data){
-            res.render('/pages/login',{
-                title: "login",
-                log: data
-            })
-        })
-        .catch(error =>{
-            request.flash(("error", error));
-            response.render('/pages/login',{
-                title: "login",
+            res.render('/pages/hone',{
                 
             })
-        });
+        })
 });
 
 app.listen(3000);

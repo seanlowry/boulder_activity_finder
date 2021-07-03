@@ -15,14 +15,10 @@
         </label>
         <a href="">forgot password?</a>
       </div>
-      <% if(log){
+      <% if(data){
             {%>
-                <% 
-                    if(data = document.getElementById("inputPassword")){
-                        window.location.href='home.ejs';
-                    }
-                %>
-            <% } %>
+
+            }
       <% } %>
       <button class="btn btn-lg btn-primary" type="submit">sign-in</button>
       <a class="btn btn-lg btn-primary" href="registration.html">register</a>

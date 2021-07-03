@@ -1,7 +1,6 @@
 var express = require("express")
 var app = express()
 var bodyParser = require('body-parser')
-const { request, response } = require("express")
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
@@ -11,8 +10,6 @@ var pgp = require('pg-promise')();
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
-
-var pgp = require('pg-promise')();
 
 const dbConfig = {
 	host: 'db',
@@ -32,23 +29,12 @@ app.get('/',function(req, res){
 
 
 app.get('/',function(req, res){
-    var email = req.query.inputEmail;
-    var pass = req.query.inputPassword;
-    var query1 = 'SELECT * FROM users WHERE email = '+ email+';'
-    db.any(query1)
-        .then(function(data){
-            res.render('/pages/login',{
-                title: "login",
-                log: data
-            })
-        })
-        .catch(error =>{
-            request.flash(("error", error));
-            response.render('/pages/login',{
-                title: "login",
-                
-            })
-        });
+
+    var query1 = 'SELECT * FROM users;'
+    var query2 = 
+    res.render('pages/home.ejs',{
+
+    });
 });
 
 app.listen(3000);
