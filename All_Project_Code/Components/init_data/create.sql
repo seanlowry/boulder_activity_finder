@@ -1,17 +1,33 @@
-DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users{
-    fullname PRIMARY VARCHAR(20),
-    email VARCHAR(30) NOT NULL,
-    password VARCHAR(20) NOT NULL
-};
-
+DROP TABLE IF EXISTS user_details;
 DROP TABLE IF EXISTS posts;
-CREATE TABLE IF NOT EXISTS posts{
-    activity_name PRIMARY VARCHAR(40),
-    description VARCHAR(30) NOT NULL,
-    date DATE,
-};
+DROP TABLE IF EXISTS messages;
 
-INSERT INTO  users(fullname, email, password)
-VALUE("admin", "admin@abc.com", "admin");
+CREATE TABLE IF NOT EXISTS user_details(
+  user_id SERIAL PRIMARY KEY,
+  firstName VARCHAR(30),
+  lastName VARCHAR(30),
+  email VARCHAR(30) UNIQUE,
+  user_password VARCHAR(20) NOT NULL
+);
 
+CREATE TABLE IF NOT EXISTS posts(
+  post_id SERIAL PRIMARY KEY,
+  author INT NOT NULL,
+  title VARCHAR(50),
+  img_src TEXT,
+  summary VARCHAR(255),
+  full_desc TEXT,
+  FOREIGN KEY (author)
+    REFERENCES user_details(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS messages(
+  message_id SERIAL PRIMARY KEY,
+  author INT,
+  recipient INT,
+  body TEXT,
+  FOREIGN KEY (author)
+    REFERENCES user_details(user_id),
+  FOREIGN KEY (recipient)
+    REFERENCES user_details(user_id)
+);
