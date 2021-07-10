@@ -72,7 +72,7 @@ app.post('/login',function(req, res){
     var pass = req.body.inputPassword;
     //console.log(email)
    //console.log(pass)
-    var query1 = "SELECT user_password FROM user_details WHERE email = '"+email+"'"
+    var query1 = "SELECT pwd FROM user_details WHERE email = '"+email+"'"
     //console.log(query1)
     db.any(query1)
         .then(function(data){

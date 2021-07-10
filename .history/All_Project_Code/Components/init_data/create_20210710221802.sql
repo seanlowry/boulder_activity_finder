@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS user_details(
 );
 
 
-INSERT INTO user_details(user_id, firstName, lastName, email, user_password)
-VALUES(1,'admin','admin', 'admin@123.com', 'admin');
+INSERT INTO user_details(firstName,, lastName, email, user_password)
+VALUES('admin','admin', 'admin@123.com', 'admin');
 
 CREATE TABLE IF NOT EXISTS posts(
   post_id SERIAL PRIMARY KEY,
