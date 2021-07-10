@@ -29,7 +29,29 @@ const dbConfig = {
 
 var db = pgp(dbConfig);
 
-
+// 查询
+db.connect(function(err, client, done) {
+    if(err) {
+      return console.error('数据库连接出错', err);
+    }
+    // 简单输出个 Hello World
+    client.query('SELECT $1::varchar AS OUT', ["Hello World"], function(err, result) {
+      done();// 释放连接（将其返回给连接池）
+      if(err) {
+        return console.error('查询出错', err);
+      }
+      console.log(result.rows[0].out); //output: Hello World
+    });
+  });
+/*
+db.one("SELECT * FROM users;",  123)
+    .then(use =>{
+        console.log("db");
+    })
+    .catch(err =>{
+        console.log("error");
+    })
+*/
 app.get('/',function(req, res){
     res.render('pages/login',{
         my_title: ""
@@ -37,22 +59,6 @@ app.get('/',function(req, res){
 });
 
 app.get('/home',function(req, res){
-    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.any(query)
-        .then(function(data){
-            console.log(data);
-            res.render('pages/home',{
-                title: home,
-                allpost: data
-            })
-        })
-        .catch(error =>{
-            res.render('pages/home',{
-                title: home,
-                allpost: ''
-            })
-            console.log("Errpr", error)
-        })
     res.render('pages/home',{
         my_title: ""
     });

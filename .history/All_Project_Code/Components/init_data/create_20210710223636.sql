@@ -26,15 +26,7 @@ CREATE TABLE IF NOT EXISTS posts(
     REFERENCES user_details(user_id)
 );
 INSERT INTO  posts(post_id, author, title, summary, full_desc)
-VALUES(11,1,'Hiking?', 'Looking for someone interested in hiking', 'join us via XXXXXXXXX');
-INSERT INTO  posts(post_id, author, title, summary, full_desc)
-VALUES(12,1,'lost shoe', 'I lost my shoe during snowboarding', 'please contact me when you found it');
-INSERT INTO  posts(post_id, author, title, summary, full_desc)
-VALUES(13,1,'how much is the ticket for fishing?', '', 'Me and friends plan to go there this week');
-INSERT INTO  posts(post_id, author, title, summary, full_desc)
-VALUES(14,1,'Any party tonight?', '', '');
-INSERT INTO  posts(post_id, author, title, summary, full_desc)
-VALUES(15,1,'Will CS final cancelled due to the upcoming storm', '', 'I really appreciate ');
+VALUES(11,1,'Hiking?', 'Looking for someone interested in hiking', 'join us via XXXXXXXXX')
 
 
 CREATE TABLE IF NOT EXISTS messages(
