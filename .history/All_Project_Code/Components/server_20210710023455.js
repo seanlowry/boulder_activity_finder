@@ -70,18 +70,15 @@ app.post('/login',function(req, res){
     
     var email = req.body.inputEmail;
     var pass = req.body.inputPassword;
-    //console.log(email)
-   //console.log(pass)
-    var query1 = "SELECT pwd FROM users WHERE email = '"+email+"'"
-    //console.log(query1)
+    console.log(email)
+    console.log(pass)
+    var query1 = "SELECT * FROM users WHERE email = '"+email+"'"
+    console.log(query1)
     db.any(query1)
         .then(function(data){
-            var data_str = JSON.stringify(data[0].pwd)
-            console.log(data_str)
-            var pass_str = '"' + pass.toString() + '"';
-            console.log(pass_str)
-            console.log(data_str == pass_str)
-            if(data_str == pass_str){
+            console.log(data)
+            if(data = pass){
+                //console.log(data)
                 res.render('pages/home',{
                     title: "login",
                     log: data

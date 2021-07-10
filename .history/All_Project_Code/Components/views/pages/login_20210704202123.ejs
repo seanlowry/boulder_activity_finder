@@ -1,7 +1,7 @@
 <%- include('../partials/header_signin') %>
 
 <div class="container">
-    <form class="form-signin" method="post" action="/login">
+    <form class="form-signin" method="post" action="home.html">
       <img src="../resources/img/navbar-logo.jpg" alt="" width="150px">
       <br>
       <br>
@@ -18,7 +18,10 @@
       
       <button class="btn btn-lg btn-primary" type="submit">sign-in</button>
       <a class="btn btn-lg btn-primary" href="registration.html">register</a>
-      
+      <p><% if(log || title)  %>
+        <%- "log" %  >
+      <%  }%>
+    </p>
     </form>
   </div>
 

@@ -19,7 +19,7 @@ const dbConfig = {
 	port: 5432,
 	database: 'postgres',
 	user: 'postgres',
-	password: 'mysecretpassword',
+	password: 'admin',
     max: 20, //maximum connect number
     idleTimeoutMillis:30000, //idle time
 };
@@ -28,21 +28,6 @@ const dbConfig = {
 
 
 var db = pgp(dbConfig);
-
-// 查询
-db.connect(function(err, client, done) {
-    if(err) {
-      return console.error('数据库连接出错', err);
-    }
-    // 简单输出个 Hello World
-    client.query('SELECT $1::varchar AS OUT', ["Hello World"], function(err, result) {
-      done();// 释放连接（将其返回给连接池）
-      if(err) {
-        return console.error('查询出错', err);
-      }
-      console.log(result.rows[0].out); //output: Hello World
-    });
-  });
 /*
 db.one("SELECT * FROM users;",  123)
     .then(use =>{
@@ -70,29 +55,16 @@ app.post('/login',function(req, res){
     
     var email = req.body.inputEmail;
     var pass = req.body.inputPassword;
-    //console.log(email)
-   //console.log(pass)
-    var query1 = "SELECT pwd FROM users WHERE email = '"+email+"'"
-    //console.log(query1)
+    console.log(email)
+    console.log(pass)
+    var query1 = 'SELECT * FROM users;'
     db.any(query1)
         .then(function(data){
-            var data_str = JSON.stringify(data[0].pwd)
-            console.log(data_str)
-            var pass_str = '"' + pass.toString() + '"';
-            console.log(pass_str)
-            console.log(data_str == pass_str)
-            if(data_str == pass_str){
-                res.render('pages/home',{
-                    title: "login",
-                    log: data
-                })
-            }else{
-                res.render('pages/login',{
-                    title: "login",
-                    
-                })
-            }
-            
+            console.log(data)
+            res.render('pages/home',{
+                title: "login",
+                log: data
+            })
         })
         .catch(error =>{
             //request.flash(("error", error));

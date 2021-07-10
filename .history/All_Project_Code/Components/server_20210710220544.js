@@ -76,12 +76,15 @@ app.post('/login',function(req, res){
     //console.log(query1)
     db.any(query1)
         .then(function(data){
+            //console.log(data)
+            //console.log(pass)
             var data_str = JSON.stringify(data[0].pwd)
             console.log(data_str)
             var pass_str = '"' + pass.toString() + '"';
             console.log(pass_str)
             console.log(data_str == pass_str)
             if(data_str == pass_str){
+                //console.log(data)
                 res.render('pages/home',{
                     title: "login",
                     log: data

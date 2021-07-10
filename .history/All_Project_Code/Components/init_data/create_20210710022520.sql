@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS posts{
 };
 
 INSERT INTO users(name, email, pwd)
-VALUES('admin', 'admin@123.com', 'admin');
+VALUES("admin", "admin@123.com", "admin");
 

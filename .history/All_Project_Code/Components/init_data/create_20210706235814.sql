@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users(
-    name VARCHAR(20) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS users{
+    fullname PRIMARY VARCHAR(20),
     email VARCHAR(30) NOT NULL,
-    pwd VARCHAR(20) NOT NULL
-);
+    password VARCHAR(20) NOT NULL
+};
 
 DROP TABLE IF EXISTS posts;
 CREATE TABLE IF NOT EXISTS posts{
@@ -12,6 +12,6 @@ CREATE TABLE IF NOT EXISTS posts{
     date DATE,
 };
 
-INSERT INTO users(name, email, pwd)
-VALUES('admin', 'admin@123.com', 'admin');
+INSERT INTO  users(fullname, email, password)
+VALUES("admin", "admin@abc.com", "admin");
 
