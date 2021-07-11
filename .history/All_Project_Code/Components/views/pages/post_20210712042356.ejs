@@ -13,14 +13,13 @@
     if(allpost){
         var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
         allpost.forEach(function(i){
-            console.log(i)
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
             card += '<img src="..." class="card-img-top" alt="...">';
             card += '<div class="card-body">';
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.summary+'</p>';
-            card += '<button type="button"  class="btnmodal" data-content="'+ i.title +'&'+ i.summary + '&'+ i.full_desc +'">Comment</button>';
+            card += '<button type="button" class="btn btn-primary" data-content="'+ i.title +'&'+ i.summary + '&'+ i.full_desc +'">Comment</button>';
             card += '</div>';
             card += '</div>';
             card += '</div>';
@@ -34,8 +33,8 @@
 </form>
 </div>
 
-<form method="post" route="/post">
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form method="post" route="/home/post">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -43,19 +42,17 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+                <!---
                 <form>
-                    <!--
                     <img src="../../resources/img/hiking.jpg" width=300 height=300>
-                    -->
                     <div class="mb-3">
                       <label  class="form-label">Comment</label>
-                      <input type="text" class="form-control" id="comment" name="comment" >
+                      <input type="text" class="form-control" id="exampleComment" >
                       
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                   </form>
-                
+                -->
             </div>
             <!--
             <div class="modal-footer">

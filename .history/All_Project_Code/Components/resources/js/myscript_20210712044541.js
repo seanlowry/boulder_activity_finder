@@ -7,7 +7,7 @@ $(".btnmodal").on('click',function(){
   console.log(data_content)
   let temp_title
   let temp_full_desc = $(this).attr('')
-  $(".modal-title").html(modal_arr[0]);
-  $(".modal-body").prepend("<h5>" + modal_arr[modal_arr.length - 1]+"</h5>");
+  $(".modal-title").html($(this).attr('data-content'));
+  $(".modal-body").html($(this).attr('data-content'));
   $("#myModal").modal('show');
 });

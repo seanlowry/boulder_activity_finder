@@ -81,31 +81,6 @@ app.get('/post',function(req, res){
 });
 
 
-app.post('/post',function(req, res){
-    var comment = req.body.comment
-    console.log("comment:", comment)
-    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.any(query)
-        .then(function(data){
-            console.log(data);
-            res.render('pages/post',{
-                title: 'home',
-                allpost: data
-            })
-        })
-        .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
-            res.render('pages/post',{
-                title: 'home',
-                allpost: ''
-            })
-            
-        })
-    
-});
-
-
 app.post('/login',function(req, res){
     console.log(req.body.inputEmail)
     

@@ -8,6 +8,6 @@ $(".btnmodal").on('click',function(){
   let temp_title
   let temp_full_desc = $(this).attr('')
   $(".modal-title").html(modal_arr[0]);
-  $(".modal-body").prepend("<h5>" + modal_arr[modal_arr.length - 1]+"</h5>");
+  $(".modal-body").html(modal_arr[modal_arr.length - 1]);
   $("#myModal").modal('show');
 });

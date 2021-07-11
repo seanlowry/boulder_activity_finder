@@ -58,52 +58,11 @@ app.get('/home',function(req, res){
     
 });
 
-app.get('/post',function(req, res){
-    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.any(query)
-        .then(function(data){
-            console.log(data);
-            res.render('pages/post',{
-                title: 'home',
-                allpost: data
-            })
-        })
-        .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
-            res.render('pages/post',{
-                title: 'home',
-                allpost: ''
-            })
-            
-        })
-    
-});
-
-
-app.post('/post',function(req, res){
-    var comment = req.body.comment
-    console.log("comment:", comment)
-    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.any(query)
-        .then(function(data){
-            console.log(data);
-            res.render('pages/post',{
-                title: 'home',
-                allpost: data
-            })
-        })
-        .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
-            res.render('pages/post',{
-                title: 'home',
-                allpost: ''
-            })
-            
-        })
-    
-});
+app.get('/post', function(req, res){
+    res.render('pages/post',{
+        my_title: ""
+    });
+})
 
 
 app.post('/login',function(req, res){

@@ -94,18 +94,3 @@ button.search-button {
   height: 100px;
 
 }
-
-#btnmodal {
-    background-color: #000000;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 13px;
-    margin: 1px 1px;
-    cursor: pointer;
-    border-radius: 12px;
-  
-}
