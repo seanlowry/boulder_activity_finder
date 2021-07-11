@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+<form route='/home' method="get">
+    <% 
+    if(allpost){
+        var card = ""
+        allpost.forEach(function(i){
+            
+            card += '<div class="card" style="width: 18rem;">';
+            card += '<img src="..." class="card-img-top" alt="...">';
+            card += '<div class="card-body">';
+            card += '<h5 class="card-title">Card title</h5>';
+            card += '<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>';
+            card += '<a href="#" class="btn btn-primary">Go somewhere</a>';
+            card += '</div>';
+            card += '</div>';
+        });%>
+        <%- card %>
+   <% } %>
+   
+</form>
+
+<%- include('../partials/footer') %>

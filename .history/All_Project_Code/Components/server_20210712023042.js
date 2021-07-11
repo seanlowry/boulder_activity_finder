@@ -47,7 +47,6 @@ app.get('/home',function(req, res){
             })
         })
         .catch(error =>{
-            console.log("fail")
             console.log("Error", error)
             res.render('pages/home',{
                 title: 'home',

@@ -47,13 +47,11 @@ app.get('/home',function(req, res){
             })
         })
         .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
             res.render('pages/home',{
                 title: 'home',
                 allpost: ''
             })
-            
+            console.log("Error", error)
         })
     
 });
@@ -81,7 +79,6 @@ app.post('/login',function(req, res){
             }else{
                 res.render('pages/login',{
                     title: "login",
-                    log: ''
                 })
             }
             

@@ -19,7 +19,7 @@ const dbConfig = {
 	port: 5432,
 	database: 'postgres',
 	user: 'postgres',
-	password: 'mysecretpassword',
+	password: 'pwd',
     max: 20, //maximum connect number
     idleTimeoutMillis:30000, //idle time
 };
@@ -47,13 +47,11 @@ app.get('/home',function(req, res){
             })
         })
         .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
             res.render('pages/home',{
                 title: 'home',
                 allpost: ''
             })
-            
+            console.log("Error", error)
         })
     
 });
@@ -70,7 +68,6 @@ app.post('/login',function(req, res){
     //console.log(query1)
     db.any(query1)
         .then(function(data){
-            console.log(data)
             var data_str = JSON.stringify(data[0].user_password)
             var pass_str = '"' + pass.toString() + '"';
             if(data_str == pass_str){
@@ -81,7 +78,6 @@ app.post('/login',function(req, res){
             }else{
                 res.render('pages/login',{
                     title: "login",
-                    log: ''
                 })
             }
             

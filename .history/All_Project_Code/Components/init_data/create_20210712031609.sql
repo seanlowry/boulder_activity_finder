@@ -16,9 +16,6 @@ CREATE TABLE IF NOT EXISTS user_details(
 INSERT INTO user_details(user_id, firstName, lastName, email, user_password)
 VALUES(1,'admin','admin', 'admin@123.com', 'admin');
 
-/*
-*/
-
 CREATE TABLE IF NOT EXISTS posts(
   post_id SERIAL PRIMARY KEY,
   author INT NOT NULL,
@@ -51,18 +48,3 @@ CREATE TABLE IF NOT EXISTS messages(
   FOREIGN KEY (recipient)
     REFERENCES user_details(user_id)
 );
-
-/*
-members implement with member id&id&id to record who join the activities
-*/
-
-CREATE TABLE IF NOT EXISTS activities(
-  activity_id SERIAL PRIMARY KEY,
-  manager VARCHAR(30) NOT NULL,
-  members TEXT, 
-  activity_name VARCHAR(30) NOT NULL,
-  acitivity_time TIMESTAMPTZ
-);
-
-INSERT INTO activities(manager, activity_name, acitivity_time)
-VALUES('Admin', 'first activity', '2021-07-07 12:00:00');

@@ -14,5 +14,5 @@ exampleModal.addEventListener('show.bs.modal', function (event) {
   modalTitle.textContent = 'New message to ' + recipient
   //modalBodyInput.value = recipient
   modalBodyInput.value = recipient
-  console.log("in query")
+  console.log("in quert")
 })

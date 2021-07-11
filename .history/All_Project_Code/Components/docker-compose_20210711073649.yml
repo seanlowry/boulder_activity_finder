@@ -23,7 +23,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: activity_finder_db
+      POSTGRES_DB: 
     expose:
       - "5432"                                  # We need only expose port `5432` internally to node (not the host)
     volumes:
