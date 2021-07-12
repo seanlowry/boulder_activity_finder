@@ -22,7 +22,7 @@ services:
     # file [5] or use secrets [6]. In no case should such files be uploaded to GitHub.
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_PASSWORD: pwd
       POSTGRES_DB: activity_finder_db
     expose:
       - "5432"                                  # We need only expose port `5432` internally to node (not the host)
@@ -50,7 +50,7 @@ services:
       - ./:/home/node/app                       # Binds the current directory (containing our source code) into the image,
                                                 #  so that changes made to the source code on the host
                                                 #  are reflected witin the container.
-    command: "npm run start"                        # This is a semi-hack for this lab that runs both npm install
+    command: "npm start"                        # This is a semi-hack for this lab that runs both npm install
                                                 # and node index.js (see the prestart command in package.json)
 
 # This defines our volume(s), which will perist throughout startups.

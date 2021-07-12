@@ -1,33 +1,23 @@
-var express = require("express")
-var app = express()
-var bodyParser = require('body-parser')
-const { request, response } = require("express")
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
-
-var pgp = require('pg-promise')();
-
-// set the view engine to ejs
-app.set('view engine', 'ejs');
-//app.set('views', __dirname + '/');
-app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
+var express = require("express");
+var app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 var pgp = require('pg-promise')();
 
 const dbConfig = {
-	host: 'localhost',
+	host: 'db',
 	port: 5432,
-	database: 'postgres',
+	database: 'activity_finder_db',
 	user: 'postgres',
-	password: 'mysecretpassword',
-    max: 20, //maximum connect number
-    idleTimeoutMillis:30000, //idle time
+	password: 'pwd'
 };
 
-//var pool = new pgp.pool(dbConfig)
-
-
 var db = pgp(dbConfig);
+
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/'));
 
 
 app.get('/',function(req, res){
