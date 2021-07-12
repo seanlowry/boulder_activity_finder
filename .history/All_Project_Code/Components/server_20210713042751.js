@@ -82,26 +82,23 @@ app.get('/public_post',function(req, res){
 
 
 app.post('/public_post',function(req, res){
-    var comment = req.body.comment
-    var ids = req.body.Id
-    var temp_arr = ids.split('&') //[posy_id & author_id]
-   //console.log(comment)
-   // console.log(ids)
-    //console.log(temp_arr)
-    //console.log(req.body)//console.log("comment:", comment)
-    var query1 = "INSERT INTO comments(post_id, author_id, body)VALUES('"+parseInt(temp_arr[0])+"','"+parseInt(temp_arr[1])+"','"+comment+"');"
-    var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    var comment = req.body.neededID
+    console.log(req.body)
+    console.log(req.body)
+    //console.log("comment:", comment)
+    var query1 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+
     db.task('get-everything', task=>{
         return task.batch([
             task.any(query1),
-            task.any(query2)
+            //task.any(query2)
         ])
     })
         .then(function(data){
             //console.log(data);
             res.render('pages/post',{
                 title: 'home',
-                allpost: data[1]
+                allpost: data[0]
             })
         })
         .catch(error =>{

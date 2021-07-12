@@ -14,7 +14,7 @@
     if(allpost){
         var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
         allpost.forEach(function(i){
-            
+            console.log(i)
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
             card += '<img src="..." class="card-img-top" alt="...">';
@@ -57,7 +57,7 @@
                     <div class="mb-3">
                       <label  class="form-label">Comment</label>
                       <input type="text" class="form-control" id="comment" name="comment" >
-                      <input type="hidden" class="neededId" id="modal_id" name="Id" value="notset">
+                      <input type="hidden" id="neededId" name="neededId" value="3487">
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                     

@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS comments(
 );
 
 INSERT INTO comments(post_id, author_id, body)
-VALUES(1,1,'first comment');
+VALUES(1,1,"first comment");
 
 /*
 members implement with member id&id&id to record who join the activities

@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS messages(
 );
 
 CREATE TABLE IF NOT EXISTS comments(
-  comment_id SERIAL PRIMARY KEY,
+  comment_id SERIAL PRIMARY KEY
   post_id INT NOT NULL,
   author_id INT NOT NULL,
   img_src TEXT,
@@ -61,9 +61,6 @@ CREATE TABLE IF NOT EXISTS comments(
   FOREIGN KEY (post_id)
     REFERENCES posts(post_id)
 );
-
-INSERT INTO comments(post_id, author_id, body)
-VALUES(1,1,'first comment');
 
 /*
 members implement with member id&id&id to record who join the activities
@@ -81,5 +78,5 @@ CREATE TABLE IF NOT EXISTS activities(
     REFERENCES users(user_id)
 );
 
-INSERT INTO activities(manager_id,title ,activity_date, acitivity_time, description)
-VALUES(1, 'first activity','20210707', '2021-07-07 12:00:00', 'no idea');
+INSERT INTO activities(manager_id, activity_name, acitivity_time)
+VALUES(1, 'first activity', '2021-07-07 12:00:00');

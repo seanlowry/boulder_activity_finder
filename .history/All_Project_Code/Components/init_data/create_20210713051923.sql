@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS messages(
 );
 
 CREATE TABLE IF NOT EXISTS comments(
-  comment_id SERIAL PRIMARY KEY,
+  comment_id SERIAL PRIMARY KEY
   post_id INT NOT NULL,
   author_id INT NOT NULL,
   img_src TEXT,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS comments(
 );
 
 INSERT INTO comments(post_id, author_id, body)
-VALUES(1,1,'first comment');
+VALUES(1,1,"first comment");
 
 /*
 members implement with member id&id&id to record who join the activities

@@ -17,7 +17,7 @@ const dbConfig = {
 const dbConfig = {
 	host: 'localhost',
 	port: 5432,
-	database: 'postgres',
+	database: 'my-postgres',
 	user: 'postgres',
 	password: 'mysecretpassword'
 };
@@ -56,9 +56,7 @@ app.get('/home',function(req, res){
 
 });
 
-app.get('/public_post',function(req, res){
-    //var author_id =  req.body
-
+app.get('/post',function(req, res){
     var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
     db.any(query)
         .then(function(data){
@@ -81,27 +79,16 @@ app.get('/public_post',function(req, res){
 });
 
 
-app.post('/public_post',function(req, res){
+app.post('/posting',function(req, res){
     var comment = req.body.comment
-    var ids = req.body.Id
-    var temp_arr = ids.split('&') //[posy_id & author_id]
-   //console.log(comment)
-   // console.log(ids)
-    //console.log(temp_arr)
-    //console.log(req.body)//console.log("comment:", comment)
-    var query1 = "INSERT INTO comments(post_id, author_id, body)VALUES('"+parseInt(temp_arr[0])+"','"+parseInt(temp_arr[1])+"','"+comment+"');"
-    var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.task('get-everything', task=>{
-        return task.batch([
-            task.any(query1),
-            task.any(query2)
-        ])
-    })
+    console.log("comment:", comment)
+    //var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    db.any(query)
         .then(function(data){
             //console.log(data);
             res.render('pages/post',{
                 title: 'home',
-                allpost: data[1]
+                allpost: data
             })
         })
         .catch(error =>{

@@ -9,19 +9,20 @@
         
     </style>
     
-<form route='/public_post' method="get">
+<form route='/home' method="get">
     <% 
     if(allpost){
         var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
         allpost.forEach(function(i){
-            
+            console.log(i)
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
             card += '<img src="..." class="card-img-top" alt="...">';
             card += '<div class="card-body">';
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.summary+'</p>';
-            card += '<button type="button"  class="btnmodal" name="'+ i.post_id + '&' + i.author_id +'" data-content="'+ i.title +'&'+ i.summary + '&'+ i.full_desc + '&' + i.author_id + '&' + i.post_id + '">Comment</button>';
+            card += '<button type="button"  class="btnmodal" name="'+ i.post_id + '&' + i.author_id +'" data-content="'+ i.title +'&'+ i.summary + '&'+ i.full_desc +'">Comment</button>';
+            card += '<div name="neededID" style="display: none;">'+i.author_id + '&' + i.post_id + '</div>'
             card += '</div>';
             card += '</div>';
             card += '</div>';
@@ -50,17 +51,16 @@
                 <div class="print_info">
 
                 </div>
-                <form class="comment_box" route="/public_post" method="post">
+                <form class="comment_box">
                     <!--
                     <img src="../../resources/img/hiking.jpg" width=300 height=300>
                     -->
                     <div class="mb-3">
                       <label  class="form-label">Comment</label>
                       <input type="text" class="form-control" id="comment" name="comment" >
-                      <input type="hidden" class="neededId" id="modal_id" name="Id" value="notset">
+                      
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                    
                   </form>
             </div>
     

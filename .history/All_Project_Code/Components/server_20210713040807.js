@@ -82,26 +82,20 @@ app.get('/public_post',function(req, res){
 
 
 app.post('/public_post',function(req, res){
-    var comment = req.body.comment
-    var ids = req.body.Id
-    var temp_arr = ids.split('&') //[posy_id & author_id]
-   //console.log(comment)
-   // console.log(ids)
-    //console.log(temp_arr)
-    //console.log(req.body)//console.log("comment:", comment)
-    var query1 = "INSERT INTO comments(post_id, author_id, body)VALUES('"+parseInt(temp_arr[0])+"','"+parseInt(temp_arr[1])+"','"+comment+"');"
-    var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    var comment = req.body.neededID
+    console.log(comment)
+    console.log("comment:", comment)
+    var query = "SELECT * FROM posts;"
     db.task('get-everything', task=>{
         return task.batch([
-            task.any(query1),
-            task.any(query2)
+            
         ])
     })
         .then(function(data){
             //console.log(data);
             res.render('pages/post',{
                 title: 'home',
-                allpost: data[1]
+                
             })
         })
         .catch(error =>{
@@ -124,7 +118,7 @@ app.post('/login',function(req, res){
     var pass = req.body.inputPassword;
     //console.log(email)
    //console.log(pass)
-    var query1 = "SELECT user_password FROM users WHERE email = '"+email+"'"
+    var query1 = "SELECT user_password FROM user_details WHERE email = '"+email+"'"
     //console.log(query1)
     db.any(query1)
         .then(function(data){

@@ -3,7 +3,7 @@ $(".btnmodal").on('click',function(){
   let data_content = $(this).attr('data-content').toString()
   modal_arr = data_content.split('&')
   console.log(modal_arr)
-  //console.log(data_content)
+  console.log(data_content)
   let temp_title
   let temp_full_desc = $(this).attr('')
   var str = $('.modal-title').html()
@@ -12,14 +12,9 @@ $(".btnmodal").on('click',function(){
     $(".modal-title").empty()
     $(".print_info").empty()
     $(".modal-title").html(modal_arr[0]);
-    //console.log(modal_arr)
-    //$(".comment_box").find('.neededID').val('2132')
-    //console.log(document.getElementsByClassName('neededID').val);
-    //console.log("id,", $(".comment_box").find('.neededID').val())
-    $("#modal_id").val(modal_arr[modal_arr.length-1] + '&' + modal_arr[modal_arr.length-2])
-    //$(".print_info").prepend('<input type="hidden" class="neededId" name="id" value="'+modal_arr[modal_arr.length-1] + '&' + modal_arr[modal_arr.length-2]+'"></input>')
+    console.log(modal_arr)
     if(modal_arr.length == 2){
-      $(".print_info").prepend("<h4>" + modal_arr[1]+"</h4>");
+      $(".print_info").prepend("<h5>" + modal_arr[1]+"</h5>");
     }else{
       $(".print_info").prepend("<h5>" + modal_arr[2]+"</h5>");
       $(".print_info").prepend("<h4>" + modal_arr[1]+"</h4><br>");
@@ -30,19 +25,8 @@ $(".btnmodal").on('click',function(){
 });
 
 $(function(){
-  $('#comment_box').on('submit', function(data){
-    data.preventDefault();
-    $.ajax({
-      url: '../../server.js',
-      method: 'post',
-      data: ('#comment_box').serialize(),
-      success: function(){
-        console.log("success")
-      }
-    })
-  })
+  $('#comment_box').on
 })
-
 
 function validateForm() {
   if (!checkUsernameAvail()) {

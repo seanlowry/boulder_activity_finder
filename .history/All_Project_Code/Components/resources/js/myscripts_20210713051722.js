@@ -16,7 +16,7 @@ $(".btnmodal").on('click',function(){
     //$(".comment_box").find('.neededID').val('2132')
     //console.log(document.getElementsByClassName('neededID').val);
     //console.log("id,", $(".comment_box").find('.neededID').val())
-    $("#modal_id").val(modal_arr[modal_arr.length-1] + '&' + modal_arr[modal_arr.length-2])
+    $("#modal_id").val(modal_arr[modal_arr.length-1 + '&' + modal_arr[modal_arr.length-2]])
     //$(".print_info").prepend('<input type="hidden" class="neededId" name="id" value="'+modal_arr[modal_arr.length-1] + '&' + modal_arr[modal_arr.length-2]+'"></input>')
     if(modal_arr.length == 2){
       $(".print_info").prepend("<h4>" + modal_arr[1]+"</h4>");
