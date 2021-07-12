@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 INSERT INTO users (firstName, lastName, username, email, user_password)
-VALUES ('admin','admin','admin','admin@123.com','admin'),
+VALUES ('Big','Boss','admin','admin@123.com','admin'),
 ('Sean', 'Lowry', 'selo', 'selo4751@colorado.edu', 'password'),
 ('David', 'Farrow', 'dafa', 'dafa9718@colorado.edu', 'password'),
 ('Xiang', 'Chen', 'xich', 'xich4932@colorado.edu', 'password');
@@ -41,13 +41,25 @@ VALUES (1, 'PostTitle', 'This is the brief description of the post', 'And this w
 
 CREATE TABLE IF NOT EXISTS messages(
   message_id SERIAL PRIMARY KEY,
-  author_id INT,
-  recipient_id INT,
-  body TEXT,
+  author_id INT NOT NULL,
+  recipient_id INT NOT NULL,
+  body TEXT NOT NULL,
   FOREIGN KEY (author_id)
     REFERENCES users(user_id),
   FOREIGN KEY (recipient_id)
     REFERENCES users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS comments(
+  comment_id SERIAL PRIMARY KEY
+  post_id INT NOT NULL,
+  author_id INT NOT NULL,
+  img_src TEXT,
+  body VARCHAR(255),
+  FOREIGN KEY (author_id)
+    REFERENCES users(user_id),
+  FOREIGN KEY (post_id)
+    REFERENCES posts(post_id)
 );
 
 /*
@@ -58,8 +70,10 @@ CREATE TABLE IF NOT EXISTS activities(
   activity_id SERIAL PRIMARY KEY,
   manager_id INT NOT NULL,
   member_ids INT[],
-  activity_name VARCHAR(30) NOT NULL,
-  acitivity_time TIMESTAMPTZ,
+  title VARCHAR(30) NOT NULL,
+  activity_date DATE NOT NULL,
+  acitivity_time TIMESTAMPTZ NOT NULL,
+  description TEXT NOT NULL,
   FOREIGN KEY (manager_id)
     REFERENCES users(user_id)
 );
