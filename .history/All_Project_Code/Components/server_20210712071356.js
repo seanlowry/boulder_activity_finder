@@ -87,7 +87,7 @@ app.post('/posting',function(req, res){
     //var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
     db.any(query)
         .then(function(data){
-            //console.log(data);
+            console.log(data);
             res.render('pages/post',{
                 title: 'home',
                 allpost: data
@@ -117,7 +117,7 @@ app.post('/login',function(req, res){
     //console.log(query1)
     db.any(query1)
         .then(function(data){
-            //console.log(data)
+            console.log(data)
             var data_str = JSON.stringify(data[0].user_password)
             var pass_str = '"' + pass.toString() + '"';
             if(data_str == pass_str){

@@ -14,14 +14,19 @@ $(".btnmodal").on('click',function(){
     $(".print_info").empty()
     $(".modal-title").html(modal_arr[0]);
     console.log(modal_arr)
+  
     if(modal_arr.length == 2){
+
       $(".print_info").prepend("<h5>" + modal_arr[1]+"</h5>");
+      console.log("222")
     }else{
+      console.log("333")
       $(".print_info").prepend("<h5>" + modal_arr[2]+"</h5>");
       $(".print_info").prepend("<h4>" + modal_arr[1]+"</h4><br>");
     }
   }
+    
   modal_arr = []
   $("#myModal").modal('show');
+  
 });
-

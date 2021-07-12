@@ -34,7 +34,7 @@
 </form>
 </div>
 
-<div method="post" route="/posting">
+<form method="post" route="/post">
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -43,9 +43,6 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="print_info">
-
-                </div>
                 <form class="comment_box">
                     <!--
                     <img src="../../resources/img/hiking.jpg" width=300 height=300>
@@ -58,12 +55,19 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
                   </form>
             </div>
-    
+            <div class="modal-body-second">
+                
+            </div>
+            <!--
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Submit</button>
+            </div>
+            -->
           </div>
         </div>
       </div>
-    </div>
-</div>
+</form>
 
 
 <%- include('../partials/footer') %>

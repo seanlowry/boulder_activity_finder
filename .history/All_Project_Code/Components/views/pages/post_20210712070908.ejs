@@ -34,7 +34,7 @@
 </form>
 </div>
 
-<div method="post" route="/posting">
+<form method="post" route="/posting">
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -58,12 +58,19 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
                   </form>
             </div>
-    
+            <div class="modal-body-second">
+                
+            </div>
+            <!--
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Submit</button>
+            </div>
+            -->
           </div>
         </div>
       </div>
-    </div>
-</div>
+</form>
 
 
 <%- include('../partials/footer') %>
