@@ -87,7 +87,7 @@ function checkPasswordMatch() {
     return false;
   }
 }
-/*
+
 $("#downbtn").click(function(){
   createICSfile();
 })
@@ -107,8 +107,8 @@ function createICSfile(){
         "X-LIC-LOCATION:America/Denver\n" +
     "BEGIN:STANDARD\n" +
     "TZNAME:MST\n" +
-    "TZOFFSETFROM:-0600\n" +
-    "TZOFFSETTO:-0700\n" +
+    "TZOFFSETFROM:+0800\n" +
+    "TZOFFSETTO:+0800\n" +
     "DTSTART:19700101T000000\n" +
     "END:STANDARD\n" +
     "END:VTIMEZONE\n" + 
@@ -153,7 +153,6 @@ function createICSfile(){
     }
     
     icsFile = window.URL.createObjectURL(data);
-    var file = document.getElementByClass("downbtn")
+  
     return icsFile;
 }
-*/

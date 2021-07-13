@@ -87,14 +87,15 @@ function checkPasswordMatch() {
     return false;
   }
 }
-/*
-$("#downbtn").click(function(){
-  createICSfile();
-})
 
-var icsFile = null;
 
 function createICSfile(){
+    var title = document.getElementById("title");
+    var desc = document.getElementById("desc");
+    var time = document.getElementById("time");
+    console.log(title)
+    console.log(desc)
+    console.log(time.split(' '))
     let str =
       "BEGIN:VCALENDAR\n" +
       "CALSCALE:GREGORIAN\n" +
@@ -106,9 +107,9 @@ function createICSfile(){
     "TZURL:http://tzurl.org/zoneinfo-outlook/America/Denver\n"+
         "X-LIC-LOCATION:America/Denver\n" +
     "BEGIN:STANDARD\n" +
-    "TZNAME:MST\n" +
-    "TZOFFSETFROM:-0600\n" +
-    "TZOFFSETTO:-0700\n" +
+    "TZNAME:CST\n" +
+    "TZOFFSETFROM:+0800\n" +
+    "TZOFFSETTO:+0800\n" +
     "DTSTART:19700101T000000\n" +
     "END:STANDARD\n" +
     "END:VTIMEZONE\n" + 
@@ -126,9 +127,9 @@ function createICSfile(){
      "\n" +
          "TZID:America/Denver\n" +
      "SUMMARY:" +
-      "review for " + "djasdasd" +
+      "review for " + event_name +
      "\n" +
-     "DESCRIPTION:" + "review for "+ "dasdasd" +
+     "DESCRIPTION:" + "review for "+ event_name +
      "\n" +
      "BEGIN:VALARM\n" +                                                                       
      "TRIGGER:-PT10M\n" +
@@ -138,10 +139,9 @@ function createICSfile(){
         // "\n" +
      //"RRULE: FREQ=WEEKLY; WKST=SUN; BYDAY= " + r_week + //"EXDATE="+ exclude_str +
      //"\n" +
-     "END:VEVENT\n"; +
+     "END:VEVENT\n";
 
        "END:VCALENDAR";
-       console.log(str)
       //console.log("test cal\n", test)
     /////console.log(test)
     let data = new File([str], { type: "text/plain" });
@@ -153,7 +153,7 @@ function createICSfile(){
     }
     
     icsFile = window.URL.createObjectURL(data);
-    var file = document.getElementByClass("downbtn")
+  
     return icsFile;
 }
-*/
+}

@@ -87,14 +87,10 @@ function checkPasswordMatch() {
     return false;
   }
 }
-/*
-$("#downbtn").click(function(){
-  createICSfile();
-})
 
-var icsFile = null;
 
 function createICSfile(){
+  
     let str =
       "BEGIN:VCALENDAR\n" +
       "CALSCALE:GREGORIAN\n" +
@@ -106,42 +102,16 @@ function createICSfile(){
     "TZURL:http://tzurl.org/zoneinfo-outlook/America/Denver\n"+
         "X-LIC-LOCATION:America/Denver\n" +
     "BEGIN:STANDARD\n" +
-    "TZNAME:MST\n" +
-    "TZOFFSETFROM:-0600\n" +
-    "TZOFFSETTO:-0700\n" +
+    "TZNAME:CST\n" +
+    "TZOFFSETFROM:+0800\n" +
+    "TZOFFSETTO:+0800\n" +
     "DTSTART:19700101T000000\n" +
     "END:STANDARD\n" +
-    "END:VTIMEZONE\n" + 
+    "END:VTIMEZONE\n";
      // //console.log(event_str)
-     "BEGIN:VEVENT\n" +
-     "UID:" +
-         Math.random().toString(36).substring(2) +
+      str += event_str;
 
-     "\n" + 
-     "DTSTART;" + "TZID=America/Denver:" +
-     "20210802" + "T" + "0008000" +
-     "\n" +
-     "DTEND;" + "TZID=America/Denver:" +
-     "20210802" + "T" + "235959" +
-     "\n" +
-         "TZID:America/Denver\n" +
-     "SUMMARY:" +
-      "review for " + "djasdasd" +
-     "\n" +
-     "DESCRIPTION:" + "review for "+ "dasdasd" +
-     "\n" +
-     "BEGIN:VALARM\n" +                                                                       
-     "TRIGGER:-PT10M\n" +
-     "ACTION:DISPLAY\n" +
-         "DESCRIPTION:Reminder\n" +
-         "END:VALARM\n" +
-        // "\n" +
-     //"RRULE: FREQ=WEEKLY; WKST=SUN; BYDAY= " + r_week + //"EXDATE="+ exclude_str +
-     //"\n" +
-     "END:VEVENT\n"; +
-
-       "END:VCALENDAR";
-       console.log(str)
+      str += "END:VCALENDAR";
       //console.log("test cal\n", test)
     /////console.log(test)
     let data = new File([str], { type: "text/plain" });
@@ -153,7 +123,7 @@ function createICSfile(){
     }
     
     icsFile = window.URL.createObjectURL(data);
-    var file = document.getElementByClass("downbtn")
+  
     return icsFile;
 }
-*/
+}

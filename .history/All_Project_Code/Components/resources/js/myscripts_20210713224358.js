@@ -87,7 +87,7 @@ function checkPasswordMatch() {
     return false;
   }
 }
-/*
+
 $("#downbtn").click(function(){
   createICSfile();
 })
@@ -156,4 +156,3 @@ function createICSfile(){
     var file = document.getElementByClass("downbtn")
     return icsFile;
 }
-*/

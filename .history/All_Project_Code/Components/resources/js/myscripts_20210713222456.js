@@ -87,7 +87,7 @@ function checkPasswordMatch() {
     return false;
   }
 }
-/*
+
 $("#downbtn").click(function(){
   createICSfile();
 })
@@ -95,6 +95,7 @@ $("#downbtn").click(function(){
 var icsFile = null;
 
 function createICSfile(){
+    
     let str =
       "BEGIN:VCALENDAR\n" +
       "CALSCALE:GREGORIAN\n" +
@@ -106,9 +107,9 @@ function createICSfile(){
     "TZURL:http://tzurl.org/zoneinfo-outlook/America/Denver\n"+
         "X-LIC-LOCATION:America/Denver\n" +
     "BEGIN:STANDARD\n" +
-    "TZNAME:MST\n" +
-    "TZOFFSETFROM:-0600\n" +
-    "TZOFFSETTO:-0700\n" +
+    "TZNAME:CST\n" +
+    "TZOFFSETFROM:+0800\n" +
+    "TZOFFSETTO:+0800\n" +
     "DTSTART:19700101T000000\n" +
     "END:STANDARD\n" +
     "END:VTIMEZONE\n" + 
@@ -138,7 +139,7 @@ function createICSfile(){
         // "\n" +
      //"RRULE: FREQ=WEEKLY; WKST=SUN; BYDAY= " + r_week + //"EXDATE="+ exclude_str +
      //"\n" +
-     "END:VEVENT\n"; +
+     "END:VEVENT\n";
 
        "END:VCALENDAR";
        console.log(str)
@@ -153,7 +154,6 @@ function createICSfile(){
     }
     
     icsFile = window.URL.createObjectURL(data);
-    var file = document.getElementByClass("downbtn")
+  
     return icsFile;
 }
-*/
