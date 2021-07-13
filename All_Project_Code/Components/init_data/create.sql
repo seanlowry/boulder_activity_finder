@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS activities;
 
 CREATE TABLE IF NOT EXISTS users(
@@ -51,7 +52,7 @@ CREATE TABLE IF NOT EXISTS messages(
 );
 
 CREATE TABLE IF NOT EXISTS comments(
-  comment_id SERIAL PRIMARY KEY
+  comment_id SERIAL PRIMARY KEY,
   post_id INT NOT NULL,
   author_id INT NOT NULL,
   img_src TEXT,
@@ -72,11 +73,12 @@ CREATE TABLE IF NOT EXISTS activities(
   member_ids INT[],
   title VARCHAR(30) NOT NULL,
   activity_date DATE NOT NULL,
-  acitivity_time TIMESTAMPTZ NOT NULL,
+  acitivity_time TIMETZ NOT NULL,
   description TEXT NOT NULL,
   FOREIGN KEY (manager_id)
     REFERENCES users(user_id)
 );
 
-INSERT INTO activities(manager_id, activity_name, acitivity_time)
-VALUES(1, 'first activity', '2021-07-07 12:00:00');
+INSERT INTO activities(manager_id, title, activity_date, acitivity_time, description)
+VALUES(1, 'first activity', '2021-07-07', '12:00:00', 'a plan to do something');
+

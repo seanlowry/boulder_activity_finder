@@ -99,11 +99,11 @@ app.post('/posting',function(req, res){
 app.post('/login',function(req, res){
     console.log(req.body.inputEmail)
 
-    var email = req.body.inputEmail;
+    var input = req.body.inputIdentifier;
     var pass = req.body.inputPassword;
     //console.log(email)
    //console.log(pass)
-    var query1 = "SELECT user_password FROM users WHERE email = '"+email+"'"
+    var query1 = `SELECT user_password FROM users WHERE email = '${input}' or username = '${input}'`;
     //console.log(query1)
     db.any(query1)
         .then(function(data){
@@ -147,24 +147,46 @@ app.get('/registration', (req, res) => {
 		})
 		.catch (err => {
 			console.log('ERROR:' + err);
-			res.render('pages/login', {
-				my_title: 'Login',
-				alert_msg: ''
+			res.render('pages/db_error', {
+				my_title: 'Error',
+				alert_msg: 'Communication Error'
 			})
 		})
 });
 
-
 app.post('/registration/new_user', (req, res) => {
 	var username = req.body.username;
 	var email = req.body.email;
-	var validateUserInfo = `select username, email from users where username= '${username}' or email= '${email}';`;
-	db.one(validateUserInfo)
+	var validateEmail = `select count(*) from users where email= '${email}';`;
+	var validateUsername = `select count(*) from users where username= '${username}';`;
+	var existing_users = 'select username from users;';
+	db.task('get-everything', task => {
+		task.one(validateEmail),
+		task.one(validateUsername),
+		task.any(existing_users)
+	})
+		.then(data => {
+			console.log(data);
+			// var emailExist = JSON.stringify(data[0].count);
+			// var usernameExist = JSON.stringify(data[1].count);
+			// if (emailExist != '0') {
+			// 	res.render('pages/invalied_entry', {
+			// 		my_title: 'Error',
+			// 		alert_msg: 'The email that you entered is already in use.'
+			// 	})
+			// }
+			// if (usernameExist != '0') {
+			// 	res.render('pages/invalied_entry', {
+			// 		my_title: 'Error',
+			// 		alert_msg: 'The username that you entered is already in use.'
+			// 	})
+			// }
+		})
 		.catch(err => {
 			console.log('ERROR:' + err);
-			res.render('pages/login', {
-				my_title: 'Login',
-				alert_msg: 'Error registering new user.'
+			res.render('pages/db_error', {
+				my_title: 'Error',
+				alert_msg: 'Communication Error.'
 			})
 		})
 	var firstname = req.body.firstname;
@@ -184,9 +206,9 @@ app.post('/registration/new_user', (req, res) => {
 		})
 		.catch(err => {
 			console.log('ERROR:' + err);
-			res.render('pages/login', {
-				my_title: 'Login',
-				alert_msg: 'Error registering new user.'
+			res.render('pages/db_error', {
+				my_title: 'Error',
+				alert_msg: 'Communication Error.'
 			})
 		})
 });
