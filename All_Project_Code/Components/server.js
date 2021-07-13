@@ -8,19 +8,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 var pgp = require('pg-promise')();
-/*
+
+// If running into errors here, try:
+// docker-compose down
+// docker volume ls
+// docker rm (whatever volume is being used for the site currently; probably 'components_labwebsite-db')
+// docker-compose up
+// This will reinitialize the database and store the future volumes in components_db_volumes
+
 const dbConfig = {
 	host: 'db',
 	port: 5432,
 	database: 'activity_finder_db',
-	user: 'postgres',
-	password: 'pwd'
-};
-*/
-const dbConfig = {
-	host: 'localhost',
-	port: 5432,
-	database: 'postgres',
 	user: 'postgres',
 	password: 'mysecretpassword'
 };
@@ -33,7 +32,8 @@ app.use(express.static(__dirname + '/'));
 
 app.get('/',function(req, res){
     res.render('pages/login',{
-        my_title: ""
+        my_title: "Login",
+				alert_msg: ''
     });
 });
 
@@ -50,7 +50,8 @@ app.get('/home',function(req, res){
             .then(function(data){
                 console.log(data);
                 res.render('pages/home',{
-                    title: 'home',
+                    my_title: 'Home',
+										alert_msg: '',
                     joinpost: data
                 })
             })
@@ -58,14 +59,16 @@ app.get('/home',function(req, res){
                 console.log("fail")
                 console.log("Error", error)
                 res.render('pages/home',{
-                    title: 'home',
+                    my_title: 'Home',
+										alert_msg: '',
                     joinpost: ''
                 })
 
             })
     }else{
         res.render('pages/login',{
-            title: 'login',
+            my_title: 'Login',
+						alert_msg: '',
             joinpost: ''
         })
     }
@@ -81,7 +84,8 @@ app.get('/public_post',function(req, res){
         .then(function(data){
             //console.log(data);
             res.render('pages/post',{
-                title: 'home',
+                my_title: 'Home',
+								alert_msg: '',
                 allpost: data
             })
         })
@@ -89,7 +93,8 @@ app.get('/public_post',function(req, res){
             console.log("fail")
             console.log("Error", error)
             res.render('pages/post',{
-                title: 'home',
+                my_title: 'Home',
+								alert_msg: '',
                 allpost: ''
             })
 
@@ -117,7 +122,8 @@ app.post('/public_post',function(req, res){
         .then(function(data){
             //console.log(data);
             res.render('pages/post',{
-                title: 'home',
+                my_title: 'home',
+								alert_msg: '',
                 allpost: data[1]
             })
         })
@@ -125,7 +131,8 @@ app.post('/public_post',function(req, res){
             console.log("fail")
             console.log("Error", error)
             res.render('pages/post',{
-                title: 'home',
+                my_title: 'home',
+								alert_msg: '',
                 allpost: ''
             })
 
@@ -142,12 +149,11 @@ function hashfunc(useremail, pwd){
 
 
 app.post('/',function(req, res){
-    console.log(req.body.inputEmail)
-
     var input = req.body.inputIdentifier;
+		console.log(req.body.inputIdentifier)
     var pass = req.body.inputPassword;
     //console.log(email)
-   //console.log(pass)
+    //console.log(pass)
     var query1 = `SELECT user_password FROM users WHERE email = '${input}' or username = '${input}'`;
     //console.log(query1)
     db.any(query1)
@@ -165,11 +171,24 @@ app.post('/',function(req, res){
                     log: data
                 })
                 */
-                res.cookie("account", {account: email, pwd: pass, userid: data[0].user_id}, {maxAge: 60000})
-                res.redirect('/home')
+								var query2 = `select user_id, username, email from users where username = '${input}' or email = '${input}';`;
+								db.any(query2)
+									.then(data2 => {
+										res.cookie("account", {userid: data2[0].user_id, username: data2[0].user_id, email: data2[0].email, pwd: pass}, {maxAge: 60000})
+										res.redirect('/home')
+									})
+									.catch (err => {
+										console.log('ERROR:' + err);
+										res.render('pages/db_error', {
+											my_title: 'Error',
+											alert_msg: 'Communication Error'
+										})
+									})
+
             }else{
                 res.render('pages/login',{
-                    title: "login",
+                    my_title: "Login",
+										alert_msg: 'Invalid login credentials.',
                     log: ''
                 })
             }
@@ -178,7 +197,8 @@ app.post('/',function(req, res){
         .catch(error =>{
             //request.flash(("error", error));
             res.render('pages/login',{
-                title: "home",
+                my_title: "Home",
+								alert_msg: '',
 
             })
             console.log("error: ", error)
@@ -213,49 +233,50 @@ app.post('/registration/new_user', (req, res) => {
 	var validateUsername = `select count(*) from users where username= '${username}';`;
 	var existing_users = 'select username from users;';
 	db.task('get-everything', task => {
-		task.one(validateEmail),
-		task.one(validateUsername),
-		task.any(existing_users)
+		return task.batch([
+			task.one(validateEmail),
+			task.one(validateUsername),
+			task.any(existing_users)
+		]);
 	})
 		.then(data => {
-			console.log(data);
-			// var emailExist = JSON.stringify(data[0].count);
-			// var usernameExist = JSON.stringify(data[1].count);
-			// if (emailExist != '0') {
-			// 	res.render('pages/invalied_entry', {
-			// 		my_title: 'Error',
-			// 		alert_msg: 'The email that you entered is already in use.'
-			// 	})
-			// }
-			// if (usernameExist != '0') {
-			// 	res.render('pages/invalied_entry', {
-			// 		my_title: 'Error',
-			// 		alert_msg: 'The username that you entered is already in use.'
-			// 	})
-			// }
-		})
-		.catch(err => {
-			console.log('ERROR:' + err);
-			res.render('pages/db_error', {
-				my_title: 'Error',
-				alert_msg: 'Communication Error.'
-			})
-		})
-	var firstname = req.body.firstname;
-	var lastname = req.body.lastname;
-	var password = req.body.password;
-    //password = hashfunc(email, password) //encryption for password
-	var createUser = `insert into users (firstname, lastname, username, email, user_password) values ('${firstname}','${lastname}','${username}','${email}','${password}');`;
-	var getUserId = `select user_id from users where username = '${username}';`;
-	db.task('get-everything', task => {
-		task.any(createUser),
-		task.one(getUserId)
-	})
-		.then(data => {
-			res.render('pages/home', {
-				my_title: 'Home',
-				alert_msg: ''
-			})
+			if (data[0].count != '0') {
+				res.render('pages/invalid_entry', {
+					my_title: 'Error',
+					alert_msg: 'The email that you entered is already in use.'
+				})
+			}
+			else if (data[1].count != '0') {
+				res.render('pages/invalid_entry', {
+					my_title: 'Error',
+					alert_msg: 'The username that you entered is already in use.'
+				})
+			}
+			else {
+				var firstname = req.body.firstname;
+				var lastname = req.body.lastname;
+				var password = req.body.password;
+					//password = hashfunc(email, password) //encryption for password
+				var createUser = `insert into users (firstname, lastname, username, email, user_password) values ('${firstname}','${lastname}','${username}','${email}','${password}');`;
+				var getUserId = `select user_id from users where username = '${username}';`;
+				db.task('get-everything', task => {
+					return task.batch([
+						task.any(createUser),
+						task.one(getUserId)
+					]);
+				})
+					.then(data1 => {
+						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 60000})
+						res.redirect('/home')
+					})
+					.catch(err => {
+						console.log('ERROR:' + err);
+						res.render('pages/db_error', {
+							my_title: 'Error',
+							alert_msg: 'Communication Error.'
+						})
+					})
+			}
 		})
 		.catch(err => {
 			console.log('ERROR:' + err);
@@ -265,7 +286,6 @@ app.post('/registration/new_user', (req, res) => {
 			})
 		})
 });
-
 
 app.listen(3000);
 console.log('3000 is the magic port');

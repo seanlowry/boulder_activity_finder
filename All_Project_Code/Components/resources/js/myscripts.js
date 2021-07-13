@@ -53,6 +53,7 @@ function validateForm() {
     alert("The passwords that you entered do not match");
     return false;
   }
+  return true;
 }
 
 function checkUsernameAvail() {
@@ -90,5 +91,5 @@ function checkPasswordMatch() {
 
 
 function createICSfile(){
-  
+
 }

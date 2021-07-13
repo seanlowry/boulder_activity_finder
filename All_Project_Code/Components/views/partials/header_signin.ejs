@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <!--Page Title-->
-    <title>Boulder Activity Finder</title>
+    <title><%- my_title %> Boulder Activity Finder</title>
 
     <!--Metadata-->
     <meta charset="UTF-8">
@@ -22,3 +22,10 @@
 </head>
 
 <body>
+
+<script type="text/javascript">
+  var alert_msg = <%- alert_msg %>
+  if (alert_msg) {
+    alert(alert_msg);
+  }
+</script>
