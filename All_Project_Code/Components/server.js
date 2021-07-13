@@ -12,7 +12,7 @@ var pgp = require('pg-promise')();
 // If running into errors here, try:
 // docker-compose down
 // docker volume ls
-// docker rm (whatever volume is being used for the site currently; probably 'components_labwebsite-db')
+// docker volume rm (whatever volume is being used for the site currently; probably 'components_labwebsite-db')
 // docker-compose up
 // This will reinitialize the database and store the future volumes in components_db_volumes
 
