@@ -1,17 +1,28 @@
 var express = require("express");
 var app = express();
 var bodyParser = require('body-parser');
+var crypto = require('crypto')
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 var pgp = require('pg-promise')();
-
+/*
 const dbConfig = {
 	host: 'db',
 	port: 5432,
 	database: 'activity_finder_db',
 	user: 'postgres',
 	password: 'pwd'
+};
+*/
+const dbConfig = {
+	host: 'localhost',
+	port: 5432,
+	database: 'postgres',
+	user: 'postgres',
+	password: 'mysecretpassword'
 };
 
 var db = pgp(dbConfig);
@@ -27,28 +38,44 @@ app.get('/',function(req, res){
 });
 
 app.get('/home',function(req, res){
-    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.any(query)
-        .then(function(data){
-            //console.log(data);
-            res.render('pages/home',{
-                title: 'home',
-                allpost: data
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        console.log("res.cookie", res.cookies)
+        console.log("req.cookies", req.cookies);
+        var query = "SELECT *  FROM activities WHERE '"+ id +"'=ANY(member_ids);"
+        db.any(query)
+            .then(function(data){
+                console.log(data);
+                res.render('pages/home',{
+                    title: 'home',
+                    joinpost: data
+                })
             })
-        })
-        .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
-            res.render('pages/home',{
-                title: 'home',
-                allpost: ''
-            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/home',{
+                    title: 'home',
+                    joinpost: ''
+                })
 
+            })
+    }else{
+        res.render('pages/login',{
+            title: 'login',
+            joinpost: ''
         })
+    }
+
 
 });
 
-app.get('/post',function(req, res){
+app.get('/public_post',function(req, res){
+    //var author_id =  req.body
+
     var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
     db.any(query)
         .then(function(data){
@@ -71,16 +98,27 @@ app.get('/post',function(req, res){
 });
 
 
-app.post('/posting',function(req, res){
+app.post('/public_post',function(req, res){
     var comment = req.body.comment
-    console.log("comment:", comment)
-    //var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.any(query)
+    var ids = req.body.Id
+    var temp_arr = ids.split('&') //[posy_id & author_id]
+   //console.log(comment)
+   // console.log(ids)
+    //console.log(temp_arr)
+    //console.log(req.body)//console.log("comment:", comment)
+    var query1 = "INSERT INTO comments(post_id, author_id, body)VALUES('"+parseInt(temp_arr[0])+"','"+parseInt(temp_arr[1])+"','"+comment+"');"
+    var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    db.task('get-everything', task=>{
+        return task.batch([
+            task.any(query1),
+            task.any(query2)
+        ])
+    })
         .then(function(data){
             //console.log(data);
             res.render('pages/post',{
                 title: 'home',
-                allpost: data
+                allpost: data[1]
             })
         })
         .catch(error =>{
@@ -95,8 +133,15 @@ app.post('/posting',function(req, res){
 
 });
 
+function hashfunc(useremail, pwd){
+    var hash = crypto.createHash('md5')
+    hash.update(useremail + pwd)
+    //console.log(hash.digest('hex'))
+    return hash.digest('hex')
+}
 
-app.post('/login',function(req, res){
+
+app.post('/',function(req, res){
     console.log(req.body.inputEmail)
 
     var input = req.body.inputIdentifier;
@@ -108,13 +153,20 @@ app.post('/login',function(req, res){
     db.any(query1)
         .then(function(data){
             //console.log(data)
+            //user_password = data[0].user_password
+           // console.log(hashfunc(email, pass));
             var data_str = JSON.stringify(data[0].user_password)
             var pass_str = '"' + pass.toString() + '"';
+
             if(data_str == pass_str){
+                /*
                 res.render('pages/home',{
-                    title: "login",
+                    title: "home",
                     log: data
                 })
+                */
+                res.cookie("account", {account: email, pwd: pass, userid: data[0].user_id}, {maxAge: 60000})
+                res.redirect('/home')
             }else{
                 res.render('pages/login',{
                     title: "login",
@@ -126,7 +178,7 @@ app.post('/login',function(req, res){
         .catch(error =>{
             //request.flash(("error", error));
             res.render('pages/login',{
-                title: "login",
+                title: "home",
 
             })
             console.log("error: ", error)
@@ -192,6 +244,7 @@ app.post('/registration/new_user', (req, res) => {
 	var firstname = req.body.firstname;
 	var lastname = req.body.lastname;
 	var password = req.body.password;
+    //password = hashfunc(email, password) //encryption for password
 	var createUser = `insert into users (firstname, lastname, username, email, user_password) values ('${firstname}','${lastname}','${username}','${email}','${password}');`;
 	var getUserId = `select user_id from users where username = '${username}';`;
 	db.task('get-everything', task => {

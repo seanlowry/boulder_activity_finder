@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS posts(
   summary VARCHAR(255),
   full_desc TEXT,
   FOREIGN KEY (author_id)
-    REFERENCES users(user_id)
+  REFERENCES users(user_id)
 );
 
 INSERT INTO  posts(author_id, title, summary, full_desc)
@@ -63,6 +63,9 @@ CREATE TABLE IF NOT EXISTS comments(
     REFERENCES posts(post_id)
 );
 
+INSERT INTO comments(post_id, author_id, body)
+VALUES(1,1,'first comment');
+
 /*
 members implement with member id&id&id to record who join the activities
 */
@@ -79,6 +82,5 @@ CREATE TABLE IF NOT EXISTS activities(
     REFERENCES users(user_id)
 );
 
-INSERT INTO activities(manager_id, title, activity_date, acitivity_time, description)
-VALUES(1, 'first activity', '2021-07-07', '12:00:00', 'a plan to do something');
-
+INSERT INTO activities(manager_id, member_ids, title, activity_date, acitivity_time, description)
+VALUES(1,'{1,2,3}', 'first activity', '2021-07-07', '12:00:00', 'a plan to do something');
