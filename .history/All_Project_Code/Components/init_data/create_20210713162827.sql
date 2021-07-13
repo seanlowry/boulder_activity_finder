@@ -75,12 +75,12 @@ CREATE TABLE IF NOT EXISTS activities(
   member_ids INT[],
   title VARCHAR(30) NOT NULL,
   activity_date DATE NOT NULL,
-  activity_time TIMESTAMPTZ NOT NULL,
+  acitivity_time TIMESTAMPTZ NOT NULL,
   description TEXT NOT NULL,
   FOREIGN KEY (manager_id)
     REFERENCES users(user_id)
 );
 
-INSERT INTO activities(manager_id, member_ids, title ,activity_date, activity_time, description)
+INSERT INTO activities(manager_id, member_ids, title ,activity_date, acitivity_time, description)
 VALUES(1,'{1,2,3}' , 'first activity','20210707', '2021-07-07 12:00:00', 'no idea');
 

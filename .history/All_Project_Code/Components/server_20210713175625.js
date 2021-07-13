@@ -40,36 +40,28 @@ app.get('/',function(req, res){
 app.get('/home',function(req, res){
     if(req.cookies["account"] !=null){
         var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        console.log("res.cookie", res.cookies)
-        console.log("req.cookies", req.cookies);
-        var query = "SELECT *  FROM activities WHERE '"+ id +"'=ANY(member_ids);"
-        db.any(query)
-            .then(function(data){
-                console.log(data);
-                res.render('pages/home',{
-                    title: 'home',
-                    joinpost: data
-                })
-            })
-            .catch(error =>{
-                console.log("fail")
-                console.log("Error", error)
-                res.render('pages/home',{
-                    title: 'home',
-                    joinpost: ''
-                })
-
-            })
-    }else{
-        res.render('pages/login',{
-            title: 'login',
-            joinpost: ''
-        })
+        
     }
-    
+    console.log("res.cookie", res.cookies)
+    console.log("req.cookies", req.cookies);
+    var query = "SELECT *  FROM activities WHERE '"+ 1 +"'=ANY(member_ids);"
+    db.any(query)
+        .then(function(data){
+            //console.log(data);
+            res.render('pages/home',{
+                title: 'home',
+                allpost: data
+            })
+        })
+        .catch(error =>{
+            console.log("fail")
+            console.log("Error", error)
+            res.render('pages/home',{
+                title: 'home',
+                allpost: ''
+            })
+
+        })
 
 });
 
@@ -165,7 +157,7 @@ app.post('/',function(req, res){
                     log: data
                 })
                 */
-                res.cookie("account", {account: email, pwd: pass, userid: data[0].user_id}, {maxAge: 60000})
+                res.cookie("account", {account: email, pwd: pass}, {maxAge: 60000})
                 res.redirect('/home')
             }else{
                 res.render('pages/login',{

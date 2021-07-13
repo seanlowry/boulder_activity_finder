@@ -3,9 +3,9 @@
 <br>
 <br>
 <br>
- <!--
+ 
 <form route="/home" method="get">
-   -->
+   
     <% 
     if(joinpost){
         var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
@@ -18,7 +18,7 @@
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.description+'</p>';
             card += '<p>'+i.activity_time.toString().substring(0,24)+'</p>'
-            card += '<button class="circlebtn"><i class="bi bi-download"></i></button>'
+            card += '<button class="circlebtn"><i class="bi bi-download"></i>Button</button>'
             card += '</div>';
             card += '</div>';
             card += '</div>';
@@ -29,8 +29,7 @@
        
         <%- card %>
     <% } %>
-    <!--
 </form>
--->
+
 
 <%- include('../partials/footer'); %>

@@ -64,10 +64,7 @@ app.get('/home',function(req, res){
 
             })
     }else{
-        res.render('pages/login',{
-            title: 'login',
-            joinpost: ''
-        })
+        req.redirect('/')
     }
     
 

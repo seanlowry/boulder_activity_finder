@@ -59,15 +59,10 @@ app.get('/home',function(req, res){
                 console.log("Error", error)
                 res.render('pages/home',{
                     title: 'home',
-                    joinpost: ''
+                    allpost: ''
                 })
 
             })
-    }else{
-        res.render('pages/login',{
-            title: 'login',
-            joinpost: ''
-        })
     }
     
 

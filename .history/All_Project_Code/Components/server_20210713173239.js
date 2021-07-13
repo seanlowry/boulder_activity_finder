@@ -2,8 +2,6 @@ var express = require("express");
 var app = express();
 var bodyParser = require('body-parser');
 var crypto = require('crypto')
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -38,38 +36,26 @@ app.get('/',function(req, res){
 });
 
 app.get('/home',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        console.log("res.cookie", res.cookies)
-        console.log("req.cookies", req.cookies);
-        var query = "SELECT *  FROM activities WHERE '"+ id +"'=ANY(member_ids);"
-        db.any(query)
-            .then(function(data){
-                console.log(data);
-                res.render('pages/home',{
-                    title: 'home',
-                    joinpost: data
-                })
-            })
-            .catch(error =>{
-                console.log("fail")
-                console.log("Error", error)
-                res.render('pages/home',{
-                    title: 'home',
-                    joinpost: ''
-                })
-
-            })
-    }else{
-        res.render('pages/login',{
-            title: 'login',
-            joinpost: ''
-        })
-    }
+    console.log("cookie", req.cookies)
     
+    var query = "SELECT *  FROM activities WHERE '"+ 1 +"'=ANY(member_ids);"
+    db.any(query)
+        .then(function(data){
+            //console.log(data);
+            res.render('pages/home',{
+                title: 'home',
+                allpost: data
+            })
+        })
+        .catch(error =>{
+            console.log("fail")
+            console.log("Error", error)
+            res.render('pages/home',{
+                title: 'home',
+                allpost: ''
+            })
+
+        })
 
 });
 
@@ -159,14 +145,12 @@ app.post('/',function(req, res){
             var pass_str = '"' + pass.toString() + '"';
             
             if(data_str == pass_str){
-                /*
                 res.render('pages/home',{
                     title: "home",
                     log: data
                 })
-                */
-                res.cookie("account", {account: email, pwd: pass, userid: data[0].user_id}, {maxAge: 60000})
-                res.redirect('/home')
+                res.cookie("account", {account: email, pwd: pass}, {maxAge: 60000});
+                console.log("after redirect");
             }else{
                 res.render('pages/login',{
                     title: "login",

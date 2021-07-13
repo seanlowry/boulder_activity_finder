@@ -1,9 +1,7 @@
 var express = require("express");
 var app = express();
 var bodyParser = require('body-parser');
-var crypto = require('crypto')
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -38,38 +36,25 @@ app.get('/',function(req, res){
 });
 
 app.get('/home',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        console.log("res.cookie", res.cookies)
-        console.log("req.cookies", req.cookies);
-        var query = "SELECT *  FROM activities WHERE '"+ id +"'=ANY(member_ids);"
-        db.any(query)
-            .then(function(data){
-                console.log(data);
-                res.render('pages/home',{
-                    title: 'home',
-                    joinpost: data
-                })
+    console.log("cookie", res.cookie)
+    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    db.any(query)
+        .then(function(data){
+            //console.log(data);
+            res.render('pages/home',{
+                title: 'home',
+                allpost: data
             })
-            .catch(error =>{
-                console.log("fail")
-                console.log("Error", error)
-                res.render('pages/home',{
-                    title: 'home',
-                    joinpost: ''
-                })
-
-            })
-    }else{
-        res.render('pages/login',{
-            title: 'login',
-            joinpost: ''
         })
-    }
-    
+        .catch(error =>{
+            console.log("fail")
+            console.log("Error", error)
+            res.render('pages/home',{
+                title: 'home',
+                allpost: ''
+            })
+
+        })
 
 });
 
@@ -133,13 +118,6 @@ app.post('/public_post',function(req, res){
 
 });
 
-function hashfunc(useremail, pwd){
-    var hash = crypto.createHash('md5')
-    hash.update(useremail + pwd)
-    //console.log(hash.digest('hex'))
-    return hash.digest('hex')
-}
-
 
 app.post('/',function(req, res){
     console.log(req.body.inputEmail)
@@ -148,27 +126,22 @@ app.post('/',function(req, res){
     var pass = req.body.inputPassword;
     //console.log(email)
    //console.log(pass)
-    var query1 = "SELECT * FROM users WHERE email = '"+email+"'"
+    var query1 = "SELECT user_password FROM users WHERE email = '"+email+"'"
     //console.log(query1)
     db.any(query1)
         .then(function(data){
             //console.log(data)
-            //user_password = data[0].user_password
-           // console.log(hashfunc(email, pass));
             var data_str = JSON.stringify(data[0].user_password)
             var pass_str = '"' + pass.toString() + '"';
-            
+            res.setHeader('Set-Cookie',`sign_in_email=${email}`)
+            console.log(res)
             if(data_str == pass_str){
-                /*
                 res.render('pages/home',{
                     title: "home",
                     log: data
                 })
-                */
-                res.cookie("account", {account: email, pwd: pass, userid: data[0].user_id}, {maxAge: 60000})
-                res.redirect('/home')
             }else{
-                res.render('pages/login',{
+                res.render('/',{
                     title: "login",
                     log: ''
                 })
@@ -177,8 +150,8 @@ app.post('/',function(req, res){
         })
         .catch(error =>{
             //request.flash(("error", error));
-            res.render('pages/login',{
-                title: "home",
+            res.render('/',{
+                title: "login",
 
             })
             console.log("error: ", error)
@@ -200,7 +173,7 @@ app.get('/registration', (req, res) => {
 		.catch (err => {
 			console.log('ERROR:' + err);
 			res.render('pages/login', {
-				my_title: 'registration',
+				my_title: 'Login',
 				alert_msg: ''
 			})
 		})
@@ -222,7 +195,6 @@ app.post('/registration/new_user', (req, res) => {
 	var firstname = req.body.firstname;
 	var lastname = req.body.lastname;
 	var password = req.body.password;
-    //password = hashfunc(email, password) //encryption for password
 	var createUser = `insert into users (firstname, lastname, username, email, user_password) values ('${firstname}','${lastname}','${username}','${email}','${password}');`;
 	var getUserId = `select user_id from users where username = '${username}';`;
 	db.task('get-everything', task => {
