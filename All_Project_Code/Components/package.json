@@ -12,6 +12,6 @@
         "pg-promise": "^10.7.0"
     },
     "scripts": {
-        "prestart": "npm install express-session connect-flash"
+        "prestart": "npm install"
     }
 }
