@@ -1,6 +1,0 @@
-DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users{
-    fullname PRIMARY VARCHAR(20),
-    email VARCHAR(30) NOT NULL,
-    
-}
