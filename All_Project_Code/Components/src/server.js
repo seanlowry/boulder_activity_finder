@@ -29,51 +29,52 @@ var db = pgp(dbConfig);
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));
 
-
 app.get('/',function(req, res){
-    res.render('pages/login',{
-        my_title: "Login",
-				alert_msg: ''
-    });
+	res.redirect('/home', {
+		alert_msg: 'Alert!'
+	})
+  // res.render('pages/login',{
+  //     my_title: "Login",
+	// 		alert_msg: ''
+  // });
 });
 
 app.get('/home',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        console.log("res.cookie", res.cookies)
-        console.log("req.cookies", req.cookies);
-        var query = "SELECT *  FROM activities WHERE '"+ id +"'=ANY(member_ids);"
-        db.any(query)
-            .then(function(data){
-                console.log(data);
-                res.render('pages/home',{
-                    my_title: 'Home',
-										alert_msg: '',
-                    joinpost: data
-                })
-            })
-            .catch(error =>{
-                console.log("fail")
-                console.log("Error", error)
-                res.render('pages/home',{
-                    my_title: 'Home',
-										alert_msg: '',
-                    joinpost: ''
-                })
-
-            })
-    }else{
-        res.render('pages/login',{
-            my_title: 'Login',
+	var currUser = req.cookies["account"];
+  if(currUser){
+    id = currUser.userid
+    var pullActivities = `SELECT * FROM activities;`;
+		var pullPost= `select * from posts;`;
+    db.task('get-everything', task => {
+			return task.batch([
+				task.any(pullActivities),
+				task.any(pullPost)
+			]);
+		})
+	    .then(function(data){
+				console.log(data)
+	      res.render('pages/home',{
+	          my_title: 'Home',
+						activities: data[0],
+						posts: data[1],
 						alert_msg: '',
-            joinpost: ''
-        })
-    }
-
-
+	          joinpost: data
+	      })
+	    })
+			.catch (err => {
+				console.log('ERROR:' + err);
+				res.render('pages/db_error', {
+					my_title: 'Error',
+					alert_msg: 'Communication Error'
+				})
+			})
+  }
+	else {
+    res.render('pages/login',{
+      my_title: 'Login',
+			alert_msg: '',
+    })
+  }
 });
 
 app.get('/public_post',function(req, res){
@@ -148,62 +149,54 @@ function hashfunc(useremail, pwd){
 }
 
 
-app.post('/',function(req, res){
-    var input = req.body.inputIdentifier;
-		console.log(req.body.inputIdentifier)
-    var pass = req.body.inputPassword;
-    //console.log(email)
-    //console.log(pass)
-    var query1 = `SELECT user_password FROM users WHERE email = '${input}' or username = '${input}'`;
-    //console.log(query1)
-    db.any(query1)
-        .then(function(data){
-            //console.log(data)
-            //user_password = data[0].user_password
-           // console.log(hashfunc(email, pass));
-            var data_str = JSON.stringify(data[0].user_password)
-            var pass_str = '"' + pass.toString() + '"';
-
-            if(data_str == pass_str){
-                /*
-                res.render('pages/home',{
-                    title: "home",
-                    log: data
-                })
-                */
-								var query2 = `select user_id, username, email from users where username = '${input}' or email = '${input}';`;
-								db.any(query2)
-									.then(data2 => {
-										res.cookie("account", {userid: data2[0].user_id, username: data2[0].user_id, email: data2[0].email, pwd: pass}, {maxAge: 60000})
-										res.redirect('/home')
-									})
-									.catch (err => {
-										console.log('ERROR:' + err);
-										res.render('pages/db_error', {
-											my_title: 'Error',
-											alert_msg: 'Communication Error'
-										})
-									})
-
-            }else{
-                res.render('pages/login',{
-                    my_title: "Login",
-										alert_msg: 'Invalid login credentials.',
-                    log: ''
-                })
-            }
-
-        })
-        .catch(error =>{
-            //request.flash(("error", error));
-            res.render('pages/login',{
-                my_title: "Home",
-								alert_msg: '',
-
-            })
-            console.log("error: ", error)
-        });
-
+app.post('/login',function(req, res){
+	var input = req.body.inputIdentifier;
+	var pass = req.body.inputPassword;
+	var checkUserExists = `SELECT count(*) FROM users WHERE email = '${input}' or username = '${input}';`;
+	db.any(checkUserExists)
+		.then(function(data){
+			console.log(data[0].count)
+			if (data[0].count == '1') {
+				var grabPassword = `SELECT user_password FROM users WHERE email = '${input}' or username = '${input}';`;
+				db.any(grabPassword)
+				 .then(data1 => {
+					 if(data1[0].user_password == pass) {
+						 console.log("success")
+						 var getUserInfo = `select user_id, firstname, username from users where username = '${input}' or email = '${input}';`;
+						 db.any(getUserInfo)
+							 .then(data2 => {
+								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 60000})
+								 res.redirect('/home')
+							 })
+							 .catch (err => {
+								 console.log('ERROR:' + err);
+								 res.render('pages/db_error', {
+									 my_title: 'Error',
+									 alert_msg: 'Communication Error'
+								 })
+							 })
+					 }
+					 else {
+						 console.log("Password Mismatch");
+						 // res.render('pages/login',{
+						 //   my_title: "Login",
+						 // 	alert_msg: 'Invalid login credentials.',
+						 //   log: ''
+						 // })
+					 }
+					})
+			}
+			else {
+				console.log("User does not exist");
+			}
+		})
+		.catch (err => {
+			console.log('ERROR:' + err);
+			res.render('pages/db_error', {
+				my_title: 'Error',
+				alert_msg: 'Communication Error'
+			})
+		})
 });
 
 

@@ -6,14 +6,13 @@
  <!--
 <form route="/home" method="get">
    -->
-    <% 
-    if(joinpost){
+    <%
+    if(posts){
         var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
-        joinpost.forEach(function(i){
-            
+        posts.forEach(function(i){
+
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
-            
             card += '<div class="card-body">';
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.description+'</p>';
@@ -22,11 +21,11 @@
             card += '</div>';
             card += '</div>';
             card += '</div>';
-            
+
         }); %>
-        
+
         <% card += '</div>'; %>
-       
+
         <%- card %>
     <% } %>
     <!--
