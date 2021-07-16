@@ -6,28 +6,26 @@
  <!--
 <form route="/home" method="get">
    -->
-    <%
-    if(posts){
-        var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
-        posts.forEach(function(i){
-
+    <% if(posts){
+        var card = '<div class="col-sm-5">';
+          posts.forEach(function(i){
             card += '<div class="col">';
-            card += '<div class="card" style="width: 18rem;">';
-            card += '<div class="card-body">';
-            card += '<h5 class="card-title">'+i.title+'</h5>';
-            card += '<p class="card-text">'+i.description+'</p>';
-            card += '<p>'+i.activity_time.toString().substring(0,24)+'</p>'
-            card += '<button class="circlebtn"><i class="bi bi-download"></i></button>'
-            card += '</div>';
-            card += '</div>';
-            card += '</div>';
-
-        }); %>
-
-        <% card += '</div>'; %>
-
+              card += '<div class="card" style="width: 18rem;">';
+                  card += '<div class="card-body">';
+                    if i.title {
+                      card += '<h5 class="card-title">'+i.title+'</h5>';
+                    }
+                    if i
+                    card += '<p class="card-text">'+i.;summary+'</p>';
+                    card += '<p>'+i.activity_time+'</p>'
+                    card += '<button class="circlebtn"><i class="bi bi-download"></i></button>'
+                  card += '</div>';
+                card += '</div>';
+              card += '</div>';
+          });
+        card += '</div>'; %>
         <%- card %>
-    <% } %>
+      <% } %>
     <!--
 </form>
 -->

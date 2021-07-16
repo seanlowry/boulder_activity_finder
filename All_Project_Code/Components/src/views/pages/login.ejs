@@ -1,21 +1,21 @@
 <%- include('../partials/header_signin') %>
 
 <div class="container center text-center">
-    <form class="form-signin" method="post" action="/login">
-      <img class="mb-3" src="../resources/img/navbar-logo.jpg" alt="" width="150px">
-      <label for="inputIdentifier" class="sr-only">email address</label>
-      <input type="text" id="inputIdentifier" class="form-control" name="inputIdentifier" placeholder="username/email" required autofocus>
-      <label for="inputPassword" class="sr-only">password</label>
-      <input type="password" id="inputPassword" class="form-control" name="inputPassword" placeholder="password" required>
-      <div class="checkbox my-2">
-        <label>
-          <input type="checkbox" value="remember-me"> remember me |
-        </label>
-        <a href="">forgot password?</a>
-      </div>
-      <button class="btn btn btn-primary" type="submit">sign-in</button>
-      <a class="btn btn btn-primary" href="registration">register</a>
-    </form>
-  </div>
+  <form class="form-signin" method="post" action="/login">
+    <img class="mb-3" src="../resources/img/navbar-logo.jpg" alt="" width="150px">
+    <label for="inputIdentifier" class="sr-only">email address</label>
+    <input type="text" id="inputIdentifier" class="form-control" name="inputIdentifier" placeholder="username/email" required autofocus>
+    <label for="inputPassword" class="sr-only">password</label>
+    <input type="password" id="inputPassword" class="form-control" name="inputPassword" placeholder="password" required>
+    <div class="checkbox my-2">
+      <label>
+      <input type="checkbox" value="remember-me"> remember me |
+      </label>
+      <a href="">forgot password?</a>
+    </div>
+    <button class="btn btn btn-primary" type="submit">sign-in</button>
+    <a class="btn btn btn-primary" href="registration">register</a>
+  </form>
+</div>
 
 <%- include('../partials/footer') %>

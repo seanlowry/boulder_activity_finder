@@ -16,43 +16,188 @@ var pgp = require('pg-promise')();
 // docker-compose up
 // This will reinitialize the database and store the future volumes in components_db_volumes
 
-const dbConfig = {
+const dev_dbConfig = {
 	host: 'db',
 	port: 5432,
-	database: 'activity_finder_db',
-	user: 'postgres',
-	password: 'mysecretpassword'
+	database: process.env.POSTGRES_DB,
+	user: process.env.POSTGRES_USER,
+	password: process.env.POSTGRES_PASSWORD
 };
 
-var db = pgp(dbConfig);
+const isProduction = process.env.NODE_ENV === 'production';
+const dbConfig = isProduction ? process.env.DATABASE_URL : dev_dbConfig;
+
+// Heroku Postgres patch for v10
+// fixes: https://github.com/vitaly-t/pg-promise/issues/711
+if (isProduction) {
+  pgp.pg.defaults.ssl = {rejectUnauthorized: false};
+}
+
+const db = pgp(dbConfig);
 
 app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/'));
 
 app.get('/',function(req, res){
-	res.redirect('/home', {
-		alert_msg: 'Alert!'
-	})
-  // res.render('pages/login',{
-  //     my_title: "Login",
-	// 		alert_msg: ''
-  // });
+  res.render('pages/login',{
+      my_title: "Login",
+			alert_msg: ''
+  });
 });
+
+app.post('/login',function(req, res){
+	var input = req.body.inputIdentifier;
+	var pass = req.body.inputPassword;
+	var checkUserExists = `SELECT count(*) FROM users WHERE email = '${input}' or username = '${input}';`;
+	db.any(checkUserExists)
+		.then(function(data){
+			if (data[0].count == '1') {
+				var grabPassword = `SELECT user_password FROM users WHERE email = '${input}' or username = '${input}';`;
+				db.any(grabPassword)
+				 .then(data1 => {
+					 if(data1[0].user_password == pass) {
+						 var getUserInfo = `select user_id, firstname, username from users where username = '${input}' or email = '${input}';`;
+						 db.any(getUserInfo)
+							 .then(data2 => {
+								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 60000})
+								 res.redirect('/home')
+							 })
+							 .catch (err => {
+								 console.log('ERROR:' + err);
+								 res.render('pages/error', {
+		 							my_title: 'Error',
+									alert_msg: "We're sorry; something has gone terribly wrong on our end."
+		 						})
+							 })
+					 }
+					 else {
+						 res.render('pages/error', {
+							my_title: 'Error',
+							alert_msg: "Incorrect Password."
+						})
+					 }
+					})
+			}
+			else {
+				res.render('pages/error', {
+				 my_title: 'Error',
+				 alert_msg: "Username/Email does not exist."
+			 })
+			}
+		})
+		.catch (err => {
+			console.log('ERROR:' + err);
+			res.render('pages/error', {
+				my_title: 'Error',
+				alert_msg: "We're sorry; something has gone terribly wrong on our end."
+			})
+		})
+});
+
+function hashfunc(useremail, pwd){
+    var hash = crypto.createHash('md5')
+    hash.update(useremail + pwd)
+    //console.log(hash.digest('hex'))
+    return hash.digest('hex')
+}
+
+app.get('/registration', (req, res) => {
+	var existing_users = 'select username from users;';
+	db.any(existing_users)
+		.then(data => {
+			res.render("pages/registration", {
+				my_title: 'Register',
+				existing_users: data,
+				alert_msg: ''
+			})
+		})
+		.catch (err => {
+			console.log('ERROR:' + err);
+			res.render('pages/error', {
+				my_title: 'Error',
+				alert_msg: "We're sorry; something has gone terribly wrong on our end."
+			})
+		})
+});
+
+app.post('/registration/new_user', (req, res) => {
+	var username = req.body.username;
+	var email = req.body.email;
+	var validateEmail = `select count(*) from users where email= '${email}';`;
+	var validateUsername = `select count(*) from users where username= '${username}';`;
+	var existing_users = 'select username from users;';
+	db.task('get-everything', task => {
+		return task.batch([
+			task.one(validateEmail),
+			task.one(validateUsername),
+			task.any(existing_users)
+		]);
+	})
+		.then(data => {
+			if (data[0].count != '0') {
+				res.render('pages/error', {
+					my_title: 'Error',
+					alert_msg: "The email you entered appears to already be in use."
+				})
+			}
+			else if (data[1].count != '0') {
+				res.render('pages/error', {
+					my_title: 'Error',
+					alert_msg: "The username you entered appears to already be in use."
+				})
+			}
+			else {
+				var firstname = req.body.firstname;
+				var lastname = req.body.lastname;
+				var password = req.body.password;
+					//password = hashfunc(email, password) //encryption for password
+				var createUser = `insert into users (firstname, lastname, username, email, user_password) values ('${firstname}','${lastname}','${username}','${email}','${password}');`;
+				var getUserId = `select user_id from users where username = '${username}';`;
+				db.task('get-everything', task => {
+					return task.batch([
+						task.any(createUser),
+						task.one(getUserId)
+					]);
+				})
+					.then(data1 => {
+						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 60000})
+						res.redirect('/home')
+					})
+					.catch(err => {
+						console.log('ERROR:' + err);
+						res.render('pages/error', {
+							my_title: 'Error',
+							alert_msg: "We're sorry; something has gone terribly wrong on our end."
+						})
+					})
+			}
+		})
+		.catch(err => {
+			console.log('ERROR:' + err);
+			res.render('pages/error', {
+				my_title: 'Error',
+				alert_msg: "We're sorry; something has gone terribly wrong on our end."
+			})
+		})
+});
+
 
 app.get('/home',function(req, res){
 	var currUser = req.cookies["account"];
   if(currUser){
     id = currUser.userid
     var pullActivities = `SELECT * FROM activities;`;
-		var pullPost= `select * from posts;`;
+		var pullPosts= `select * from posts;`;
     db.task('get-everything', task => {
 			return task.batch([
 				task.any(pullActivities),
-				task.any(pullPost)
+				task.any(pullPosts)
 			]);
 		})
 	    .then(function(data){
-				console.log(data)
+				console.log("Activities\n"+data)
+				console.log("Posts\n"+data[1])
 	      res.render('pages/home',{
 	          my_title: 'Home',
 						activities: data[0],
@@ -91,16 +236,12 @@ app.get('/public_post',function(req, res){
             })
         })
         .catch(error =>{
-            console.log("fail")
             console.log("Error", error)
-            res.render('pages/post',{
-                my_title: 'Home',
-								alert_msg: '',
-                allpost: ''
-            })
-
+						res.render('pages/error', {
+							my_title: 'Error',
+							alert_msg: "We're sorry; something has gone terribly wrong on our end."
+						})
         })
-
 });
 
 
@@ -129,155 +270,11 @@ app.post('/public_post',function(req, res){
             })
         })
         .catch(error =>{
-            console.log("fail")
-            console.log("Error", error)
-            res.render('pages/post',{
-                my_title: 'home',
-								alert_msg: '',
-                allpost: ''
-            })
-
+					res.render('pages/error', {
+						my_title: 'Error',
+						alert_msg: "We're sorry; something has gone terribly wrong on our end."
+					})
         })
-
-});
-
-function hashfunc(useremail, pwd){
-    var hash = crypto.createHash('md5')
-    hash.update(useremail + pwd)
-    //console.log(hash.digest('hex'))
-    return hash.digest('hex')
-}
-
-
-app.post('/login',function(req, res){
-	var input = req.body.inputIdentifier;
-	var pass = req.body.inputPassword;
-	var checkUserExists = `SELECT count(*) FROM users WHERE email = '${input}' or username = '${input}';`;
-	db.any(checkUserExists)
-		.then(function(data){
-			console.log(data[0].count)
-			if (data[0].count == '1') {
-				var grabPassword = `SELECT user_password FROM users WHERE email = '${input}' or username = '${input}';`;
-				db.any(grabPassword)
-				 .then(data1 => {
-					 if(data1[0].user_password == pass) {
-						 console.log("success")
-						 var getUserInfo = `select user_id, firstname, username from users where username = '${input}' or email = '${input}';`;
-						 db.any(getUserInfo)
-							 .then(data2 => {
-								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 60000})
-								 res.redirect('/home')
-							 })
-							 .catch (err => {
-								 console.log('ERROR:' + err);
-								 res.render('pages/db_error', {
-									 my_title: 'Error',
-									 alert_msg: 'Communication Error'
-								 })
-							 })
-					 }
-					 else {
-						 console.log("Password Mismatch");
-						 // res.render('pages/login',{
-						 //   my_title: "Login",
-						 // 	alert_msg: 'Invalid login credentials.',
-						 //   log: ''
-						 // })
-					 }
-					})
-			}
-			else {
-				console.log("User does not exist");
-			}
-		})
-		.catch (err => {
-			console.log('ERROR:' + err);
-			res.render('pages/db_error', {
-				my_title: 'Error',
-				alert_msg: 'Communication Error'
-			})
-		})
-});
-
-
-app.get('/registration', (req, res) => {
-	var existing_users = 'select username from users;';
-	db.any(existing_users)
-		.then(data => {
-			res.render("pages/registration", {
-				my_title: 'Register',
-				existing_users: data,
-				alert_msg: ''
-			})
-		})
-		.catch (err => {
-			console.log('ERROR:' + err);
-			res.render('pages/db_error', {
-				my_title: 'Error',
-				alert_msg: 'Communication Error'
-			})
-		})
-});
-
-app.post('/registration/new_user', (req, res) => {
-	var username = req.body.username;
-	var email = req.body.email;
-	var validateEmail = `select count(*) from users where email= '${email}';`;
-	var validateUsername = `select count(*) from users where username= '${username}';`;
-	var existing_users = 'select username from users;';
-	db.task('get-everything', task => {
-		return task.batch([
-			task.one(validateEmail),
-			task.one(validateUsername),
-			task.any(existing_users)
-		]);
-	})
-		.then(data => {
-			if (data[0].count != '0') {
-				res.render('pages/invalid_entry', {
-					my_title: 'Error',
-					alert_msg: 'The email that you entered is already in use.'
-				})
-			}
-			else if (data[1].count != '0') {
-				res.render('pages/invalid_entry', {
-					my_title: 'Error',
-					alert_msg: 'The username that you entered is already in use.'
-				})
-			}
-			else {
-				var firstname = req.body.firstname;
-				var lastname = req.body.lastname;
-				var password = req.body.password;
-					//password = hashfunc(email, password) //encryption for password
-				var createUser = `insert into users (firstname, lastname, username, email, user_password) values ('${firstname}','${lastname}','${username}','${email}','${password}');`;
-				var getUserId = `select user_id from users where username = '${username}';`;
-				db.task('get-everything', task => {
-					return task.batch([
-						task.any(createUser),
-						task.one(getUserId)
-					]);
-				})
-					.then(data1 => {
-						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 60000})
-						res.redirect('/home')
-					})
-					.catch(err => {
-						console.log('ERROR:' + err);
-						res.render('pages/db_error', {
-							my_title: 'Error',
-							alert_msg: 'Communication Error.'
-						})
-					})
-			}
-		})
-		.catch(err => {
-			console.log('ERROR:' + err);
-			res.render('pages/db_error', {
-				my_title: 'Error',
-				alert_msg: 'Communication Error.'
-			})
-		})
 });
 
 app.listen(3000);

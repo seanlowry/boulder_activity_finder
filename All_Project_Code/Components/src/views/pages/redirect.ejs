@@ -16,9 +16,18 @@
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!--External CSS Stylesheet-->
-    <link rel="stylesheet" type="text/css" href="../../resources/css/mystyle.css">
-    <link rel="stylesheet" type="text/css" href="../../resources/css/signin.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/mystyle.css">
+    <!--jquery-->
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
+
+  <%if (alert_msg) {%>
+    <script type="text/javascript">
+      alert('<%-alert_msg%>');
+    </script>
+  <%}%>
+
+<%- include('../partials/footer') %>

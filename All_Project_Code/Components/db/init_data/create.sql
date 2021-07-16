@@ -20,18 +20,37 @@ VALUES ('Big','Boss','admin','admin@123.com','admin'),
 ('David', 'Farrow', 'dafa', 'dafa9718@colorado.edu', 'password'),
 ('Xiang', 'Chen', 'xich', 'xich4932@colorado.edu', 'password');
 
+/*
+members implement with member id&id&id to record who join the activities
+*/
+
+CREATE TABLE IF NOT EXISTS activities(
+  activity_id SERIAL PRIMARY KEY,
+  manager_id INT NOT NULL,
+  member_ids INT[],
+  title VARCHAR(30) NOT NULL,
+  activity_date DATE NOT NULL,
+  acitivity_time TIMETZ NOT NULL,
+  description TEXT NOT NULL,
+  FOREIGN KEY (manager_id)
+    REFERENCES users(user_id)
+);
+
+INSERT INTO activities(manager_id, member_ids, title, activity_date, acitivity_time, description)
+VALUES(1,'{1,2,3}', 'first activity', '2021-07-07', '12:00:00', 'a plan to do something');
+
 CREATE TABLE IF NOT EXISTS posts(
   post_id SERIAL PRIMARY KEY,
   author_id INT NOT NULL,
   title VARCHAR(50),
   img_src TEXT,
-  summary VARCHAR(255),
+  body VARCHAR(255) NOT NULL,
   full_desc TEXT,
   FOREIGN KEY (author_id)
   REFERENCES users(user_id)
 );
 
-INSERT INTO  posts(author_id, title, summary, full_desc)
+INSERT INTO  posts(author_id, title, body, full_desc)
 VALUES (1, 'PostTitle', 'This is the brief description of the post', 'And this will be a longer description'),
 (2,'Hiking?', 'Looking for someone interested in hiking', 'join us via XXXXXXXXX'),
 (2,'lost shoe', 'I lost my shoe during snowboarding', 'please contact me when you found it'),
@@ -65,22 +84,3 @@ CREATE TABLE IF NOT EXISTS comments(
 
 INSERT INTO comments(post_id, author_id, body)
 VALUES(1,1,'first comment');
-
-/*
-members implement with member id&id&id to record who join the activities
-*/
-
-CREATE TABLE IF NOT EXISTS activities(
-  activity_id SERIAL PRIMARY KEY,
-  manager_id INT NOT NULL,
-  member_ids INT[],
-  title VARCHAR(30) NOT NULL,
-  activity_date DATE NOT NULL,
-  acitivity_time TIMETZ NOT NULL,
-  description TEXT NOT NULL,
-  FOREIGN KEY (manager_id)
-    REFERENCES users(user_id)
-);
-
-INSERT INTO activities(manager_id, member_ids, title, activity_date, acitivity_time, description)
-VALUES(1,'{1,2,3}', 'first activity', '2021-07-07', '12:00:00', 'a plan to do something');
