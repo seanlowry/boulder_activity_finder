@@ -92,27 +92,27 @@ function checkPasswordMatch() {
 
 function start_download(){
   console.log("function called")
-  //create <a> for event.ics to download
+  //create <a> for event.ics to be download
   let a = document.createElement('a')
   a.download = "event.ics"
-  a.style.display = 'none'
-    let url = createICSfile();
-    a.href = url
-    document.body.appendChild(a)
-    a.click()
-    URL.revokeObjectURL(url) // delete file
-    document.body.removeChild(a)
+    a.style.display = 'none'
+      let url = createICSfile();
+      a.href = url
+      document.body.appendChild(a)
+      a.click()
+      URL.revokeObjectURL(url) // delete file
+      document.body.removeChild(a)
 }
 
 var icsFile = null;
 /*
-  calendar can automatically switch time for users in different regions with TZID being set
-  remind users events before 10 mins
+  ics file can automatically switch time for users in different region
+  default region: Shanghai
+  
+  remind users event before 10 mins
 */
-function createICSfile(title, desc, time){
-    console.log(title)
-    console.log(desc)
-    console.log(time)
+function createICSfile(){
+    
     var event_str = "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
     "METHOD:PUBLISH\n" +

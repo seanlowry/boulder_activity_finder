@@ -54,6 +54,7 @@ app.get('/home',function(req, res){
                     my_title: 'Home',
 					alert_msg: '',
                     joinpost: data
+                    
                 })
                 
             })

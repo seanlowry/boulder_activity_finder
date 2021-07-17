@@ -92,32 +92,20 @@ function checkPasswordMatch() {
 
 function start_download(){
   console.log("function called")
-  //create <a> for event.ics to download
-  let a = document.createElement('a')
-  a.download = "event.ics"
-  a.style.display = 'none'
-    let url = createICSfile();
-    a.href = url
-    document.body.appendChild(a)
-    a.click()
-    URL.revokeObjectURL(url) // delete file
-    document.body.removeChild(a)
-}
+  var file = document.getElementsByClassName('downbtn')
+  file.href = createICSfile();
+  
+})
 
 var icsFile = null;
-/*
-  calendar can automatically switch time for users in different regions with TZID being set
-  remind users events before 10 mins
-*/
-function createICSfile(title, desc, time){
-    console.log(title)
-    console.log(desc)
-    console.log(time)
+
+function createICSfile(){
     var event_str = "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
     "METHOD:PUBLISH\n" +
     "PRODID:-//Test Cal//EN\n" +
     "VERSION:2.0\n" +
+    
     "BEGIN:VTIMEZONE\n"+
     "TZID:Asia/Shanghai\n" +
     "TZURL:http://tzurl.org/zoneinfo-outlook/Asia/Shanghai\n"+
@@ -135,7 +123,7 @@ function createICSfile(title, desc, time){
          Math.random().toString(36).substring(2) +
      "\n" + 
      "DTSTART;" + "TZID=Asia/Shanghai:" +
-     "20210802" + "T" + "080000" +
+     "20210802" + "T" + "000800" +
      "\n" +
      "DTEND;" + "TZID=Asia/Shanghai:" +
      "20210802" + "T" + "235959" +
@@ -154,8 +142,8 @@ function createICSfile(title, desc, time){
      "END:VEVENT\n" +
     "END:VCALENDAR";
     console.log(event_str)
-    
-    let data = new Blob([event_str], { type: "text/plain" });
+      
+    let data = new File([event_str], { type: "text/plain" });
     if (icsFile !== null) {
       window.URL.revokeObjectURL(icsFile);
     }

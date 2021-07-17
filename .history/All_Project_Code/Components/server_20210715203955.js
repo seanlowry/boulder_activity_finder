@@ -3,7 +3,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var crypto = require('crypto')
 var cookieParser = require('cookie-parser');
-const { join } = require("path");
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -55,7 +54,6 @@ app.get('/home',function(req, res){
 					alert_msg: '',
                     joinpost: data
                 })
-                
             })
             .catch(error =>{
                 console.log("fail")

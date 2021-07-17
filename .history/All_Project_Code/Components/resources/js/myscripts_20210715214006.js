@@ -90,57 +90,28 @@ function checkPasswordMatch() {
 }
 
 
-function start_download(){
-  console.log("function called")
-  //create <a> for event.ics to download
-  let a = document.createElement('a')
-  a.download = "event.ics"
-  a.style.display = 'none'
-    let url = createICSfile();
-    a.href = url
-    document.body.appendChild(a)
-    a.click()
-    URL.revokeObjectURL(url) // delete file
-    document.body.removeChild(a)
-}
+$("#downbtn").click(function(){
+  createICSfile();
+})
 
 var icsFile = null;
-/*
-  calendar can automatically switch time for users in different regions with TZID being set
-  remind users events before 10 mins
-*/
-function createICSfile(title, desc, time){
-    console.log(title)
-    console.log(desc)
-    console.log(time)
-    var event_str = "BEGIN:VCALENDAR\n" +
-    "CALSCALE:GREGORIAN\n" +
-    "METHOD:PUBLISH\n" +
-    "PRODID:-//Test Cal//EN\n" +
-    "VERSION:2.0\n" +
-    "BEGIN:VTIMEZONE\n"+
-    "TZID:Asia/Shanghai\n" +
-    "TZURL:http://tzurl.org/zoneinfo-outlook/Asia/Shanghai\n"+
-    "X-LIC-LOCATION:Asia/Shanghai\n" +
-    "BEGIN:STANDARD\n" +
-    "TZNAME:CST\n" +
-    "TZOFFSETFROM:+0800\n" +
-    "TZOFFSETTO:+0800\n" +
-    "DTSTART:19700101T000000\n" +
-    "END:STANDARD\n" +
-    "END:VTIMEZONE\n"+
-    
-    "BEGIN:VEVENT\n" + 
+
+function createICSfile(){
+
+    let str =
+    "BEGIN:VCALENDAR\n" + 
+    "VERSION:2.0\n" + 
+    "PRODID:CU BOULDER\n" + 
+    "BEGIN:VEVENT" + 
      "UID:" +
          Math.random().toString(36).substring(2) +
      "\n" + 
-     "DTSTART;" + "TZID=Asia/Shanghai:" +
-     "20210802" + "T" + "080000" +
+     "DTSTART;" + "VALUE=DATE-TIME:" +
+     "20210802" + "T" + "0008000" +
      "\n" +
-     "DTEND;" + "TZID=Asia/Shanghai:" +
+     "DTEND;" + "VALUE=DATE-TIME:" +
      "20210802" + "T" + "235959" +
      "\n" +
-     "TZID:Asia/Shanghai\n" +
      "SUMMARY:" +
       "review for " + "djasdasd" +
      "\n" +
@@ -149,18 +120,25 @@ function createICSfile(title, desc, time){
      "BEGIN:VALARM\n" +                                                                       
      "TRIGGER:-PT10M\n" +
      "ACTION:DISPLAY\n" +
-    "DESCRIPTION:Reminder\n" +
-    "END:VALARM\n" +
-     "END:VEVENT\n" +
-    "END:VCALENDAR";
-    console.log(event_str)
-    
-    let data = new Blob([event_str], { type: "text/plain" });
+         "DESCRIPTION:Reminder\n" +
+         "END:VALARM\n" +
+        
+     "END:VEVENT\n"; +
+
+       "END:VCALENDAR";
+       console.log(str)
+      
+    let data = new File([str], { type: "text/plain" });
+  
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
     if (icsFile !== null) {
       window.URL.revokeObjectURL(icsFile);
     }
+    
     icsFile = window.URL.createObjectURL(data);
-    return  icsFile;
+    var file = document.getElementsByClassName("downbtn")
+    return icsFile;
 }
 
 

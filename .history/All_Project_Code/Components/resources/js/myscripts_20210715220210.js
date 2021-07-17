@@ -90,29 +90,15 @@ function checkPasswordMatch() {
 }
 
 
-function start_download(){
+$("#downbtn").click(function(){
   console.log("function called")
-  //create <a> for event.ics to download
-  let a = document.createElement('a')
-  a.download = "event.ics"
-  a.style.display = 'none'
-    let url = createICSfile();
-    a.href = url
-    document.body.appendChild(a)
-    a.click()
-    URL.revokeObjectURL(url) // delete file
-    document.body.removeChild(a)
-}
+  createICSfile();
+})
 
 var icsFile = null;
-/*
-  calendar can automatically switch time for users in different regions with TZID being set
-  remind users events before 10 mins
-*/
-function createICSfile(title, desc, time){
-    console.log(title)
-    console.log(desc)
-    console.log(time)
+
+function createICSfile(){
+
     var event_str = "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
     "METHOD:PUBLISH\n" +
@@ -129,13 +115,12 @@ function createICSfile(title, desc, time){
     "DTSTART:19700101T000000\n" +
     "END:STANDARD\n" +
     "END:VTIMEZONE\n"+
-    
     "BEGIN:VEVENT\n" + 
      "UID:" +
          Math.random().toString(36).substring(2) +
      "\n" + 
      "DTSTART;" + "TZID=Asia/Shanghai:" +
-     "20210802" + "T" + "080000" +
+     "20210802" + "T" + "0008000" +
      "\n" +
      "DTEND;" + "TZID=Asia/Shanghai:" +
      "20210802" + "T" + "235959" +
@@ -154,13 +139,14 @@ function createICSfile(title, desc, time){
      "END:VEVENT\n" +
     "END:VCALENDAR";
     console.log(event_str)
-    
-    let data = new Blob([event_str], { type: "text/plain" });
+      
+    let data = new File([event_str], { type: "text/plain" });
     if (icsFile !== null) {
       window.URL.revokeObjectURL(icsFile);
     }
     icsFile = window.URL.createObjectURL(data);
-    return  icsFile;
+    var file = document.getElementsByClassName("downbtn")
+    return icsFile;
 }
 
 

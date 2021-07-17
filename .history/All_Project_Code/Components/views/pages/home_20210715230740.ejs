@@ -12,16 +12,15 @@
         card += '<div class="col">';
         card += '<div class="card" style="width: 18rem;">';
         card += '<div class="card-body">';
-        card += '<h5 class="card-title" id="title_'+i.+'">'+i.title+'</h5>';
+        card += '<h5 class="card-title" id="title">'+i.title+'</h5>';
         card += '<p class="card-text" id="desc">'+i.description+'</p>';
         card += '<p id="time">'+i.activity_date.toString().substring(0,24)  +'</p>' 
-        card += '<button class="downbtn"  role="button" onclick="start_download("'+ i.title + '","' + i.description + '","' + i.activity_date.toString().substring(0,24) +'")" >download</button>'
+        card += '<button class="downbtn"  role="button" onclick="start_download()" >download</button>'
         card += '</div>';
         card += '</div>';
         card += '</div>';
     }); %>
     <% card += '</div>'; %>
-    <% console.log(card) %>
     <%- card %>
     
 <% } %>

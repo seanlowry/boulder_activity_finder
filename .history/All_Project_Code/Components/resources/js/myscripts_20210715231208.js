@@ -109,10 +109,8 @@ var icsFile = null;
   calendar can automatically switch time for users in different regions with TZID being set
   remind users events before 10 mins
 */
-function createICSfile(title, desc, time){
-    console.log(title)
-    console.log(desc)
-    console.log(time)
+function createICSfile(){
+    
     var event_str = "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
     "METHOD:PUBLISH\n" +
