@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="d-grid gap-2 d-md-block">
+    <button class="btn btn-primary" type="button">Announcement</button>
+    <button class="btn btn-primary" type="button">Activity</button>
+</div>
+<form id="annou" method="POST" route="/post/annou">
+    <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Title</label>
+        <input type="text" class="form-control" id="new_title">
+      </div>
+      <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Summary</label>
+        <input type="text" class="form-control" id="new_summary">
+      </div>
+      <div class="col-12">
+        <label for="inputAddress" class="form-label">Description</label>
+        <input type="text" class="form-control" id="new_desc">
+      </div>
+      <div class="col-12">
+        <label for="inputAddress2" class="form-label">Address 2</label>
+        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+      </div>
+      <div class="col-md-6">
+        <label for="inputCity" class="form-label">City</label>
+        <input type="text" class="form-control" id="inputCity">
+      </div>
+      <div class="col-md-4">
+        
+      </div>
+      
+      <div class="col-12">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="gridCheck">
+          <label class="form-check-label" for="gridCheck">
+            Check me out
+          </label>
+        </div>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </div>
+</form>
+
+<form id="activity" method="POST" route="/post/activity">
+    
+</form>
+
+
+
+<%- include('../partials/footer') %>

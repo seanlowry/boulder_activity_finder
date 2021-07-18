@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="d-grid gap-2 d-md-block">
+    <button class="btn btn-primary" type="button" id="to_annouce">Announcement</button>
+    <button class="btn btn-primary" type="button" id="to_activity">Activity</button>
+</div>
+<script>
+    $("#to_annouce").click(function({
+        $("#annou").hide()
+    }))
+</script>
+<form id="annou" method="POST" route="/post/annou">
+    <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Title</label>
+        <input type="text" class="form-control" id="new_title">
+      </div>
+      <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Summary</label>
+        <input type="text" class="form-control" id="new_summary">
+      </div>
+      <div class="col-12">
+        <label for="inputAddress" class="form-label">Description</label>
+        <input type="text" class="form-control" id="new_desc">
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </div>
+</form>
+
+<form id="activity" method="POST" route="/post/activity">
+    
+</form>
+
+
+
+<%- include('../partials/footer') %>

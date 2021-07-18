@@ -1,0 +1,30 @@
+<%- include('../partials/header'); %>
+<%- include('../partials/navbar'); %>
+<br>
+<br>
+<br>
+
+   
+   <% if(joinpost){ 
+        
+    var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
+    joinpost.forEach(function(i){
+        card += '<div class="col">';
+        card += '<div class="card" style="width: 18rem;">';
+        card += '<div class="card-body">';
+        card += '<h5 class="card-title" id="title_'+i.+'">'+i.title+'</h5>';
+        card += '<p class="card-text" id="desc">'+i.description+'</p>';
+        card += '<p id="time">'+i.activity_date.toString().substring(0,24)  +'</p>' 
+        var para = i.title.toString() + i.i.description.toString() + i.i.activity_date.toString
+        card += '<button class="downbtn"  role="button" onclick="start_download('')" >download</button>'
+        card += '</div>';
+        card += '</div>';
+        card += '</div>';
+    }); %>
+    <% card += '</div>'; %>
+    <% console.log(card) %>
+    <%- card %>
+    
+<% } %>
+
+<%- include('../partials/footer'); %>

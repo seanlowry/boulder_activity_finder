@@ -1,0 +1,28 @@
+<%- include('../partials/header'); %>
+<%- include('../partials/navbar'); %>
+<br>
+<br>
+<br>
+
+<% if(joinpost){
+    
+    var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
+    joinpost.forEach(function(i){
+        console.log(i)
+        card += '<div class="card" style="width: 18rem;">';
+        card += '<img src="../../resources/img/hiking.jpg" class="card-img-top" alt="..." style="height: 300;width: 330;">';
+        card += '<div class="card-body">';
+        card += '<h5 class="card-title">'+i.title+'</h5>';
+        card += '<p class="card-text">'+i.description+'</p>';
+        card += '<p class="card-text">'+i.activity_date.toString().substring(4,15)+ ' '+ + i.acitivity_time.toString().substring(0,8)+'</p>';
+       
+        var param = i.title.toString() + '&' + i.description.toString() +  '&' + i.activity_date
+        card += '<a href="#" class="btn btn-primary" onclick="start_download('+i.activity_id+')" id="'+i.activity_id+'" data-content="'+i.title +  "&" + i.description + "&" + i.activity_date  + '" >Download</a>';
+        card += '</div>';
+        card += '</div>';
+    }); %>
+    <% card += '</div>'; %>
+    <%- card %>
+<%}%>
+
+<%- include('../partials/footer'); %>
