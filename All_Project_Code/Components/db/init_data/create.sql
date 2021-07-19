@@ -29,14 +29,15 @@ CREATE TABLE IF NOT EXISTS activities(
   member_ids INT[],
   title VARCHAR(30) NOT NULL,
   activity_date DATE NOT NULL,
-  acitivity_time TIMETZ NOT NULL,
+  activity_time TIME NOT NULL,
   description TEXT NOT NULL,
   FOREIGN KEY (manager_id)
     REFERENCES users(user_id)
 );
 
-INSERT INTO activities(manager_id, member_ids, title, activity_date, acitivity_time, description)
-VALUES(1,'{1,2,3}', 'first activity', '2021-07-07', '12:00:00', 'a plan to do something');
+INSERT INTO activities(manager_id, member_ids, title, activity_date, activity_time, description)
+VALUES(1,'{1,2,3}', 'first activity', '2021-07-07', '12:00:00', 'a plan to do something'),
+(1,'{1,2,3,4}', 'second activity', '2021-07-21', '13:00:00', 'a plan to do something');
 
 CREATE TABLE IF NOT EXISTS posts(
   post_id SERIAL PRIMARY KEY,
@@ -73,6 +74,7 @@ CREATE TABLE IF NOT EXISTS comments(
   comment_id SERIAL PRIMARY KEY,
   post_id INT NOT NULL,
   author_id INT NOT NULL,
+  commentee_ids INT NOT NULL,
   img_src TEXT,
   body VARCHAR(255),
   FOREIGN KEY (author_id)
@@ -81,5 +83,5 @@ CREATE TABLE IF NOT EXISTS comments(
     REFERENCES posts(post_id)
 );
 
-INSERT INTO comments(post_id, author_id, body)
-VALUES(1,1,'first comment');
+INSERT INTO comments(post_id, author_id, commentee_ids, body)
+VALUES(1,1,1,'first comment');

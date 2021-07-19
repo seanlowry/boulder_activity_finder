@@ -11,6 +11,12 @@ body {
 .round-l {
   border-radius: 15px 0px 0px 15px;
 }
+.bg-def {
+  background-color: #183140;
+}
+.cont-header {
+  color: white;
+}
 
 nav {
   background-color: #183140;
@@ -105,4 +111,17 @@ button.btn-search {
     margin: 1px 1px;
     cursor: pointer;
     border-radius: 12px;
+
+}
+
+.big-container{
+  padding: 20px;
+  margin: auto;
+  width: 90%;
+}
+
+.left-container .right-container{
+  width: 50%;
+  float: left;
+  padding: 20px;
 }

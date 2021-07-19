@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var crypto = require('crypto')
 var cookieParser = require('cookie-parser');
+const { join } = require("path");
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -95,6 +96,229 @@ app.post('/login',function(req, res){
 		})
 });
 
+app.get('/home',function(req, res){
+	var currUser = req.cookies["account"];
+  if(currUser){
+    id = currUser.userid
+    var pullActivities = `SELECT * FROM activities;`;
+		var pullPosts= `select * from posts;`;
+    db.task('get-everything', task => {
+			return task.batch([
+				task.any(pullActivities),
+				task.any(pullPosts)
+			]);
+		})
+	    .then(function(data){
+				console.log("Activities\n"+data)
+				console.log("Posts\n"+data[1])
+	      res.render('pages/home',{
+	          my_title: 'Home',
+						activities: data[0],
+						posts: data[1],
+						alert_msg: '',
+	          joinpost: data
+	      })
+	    })
+			.catch (err => {
+				console.log('ERROR:' + err);
+				res.render('pages/db_error', {
+					my_title: 'Error',
+					alert_msg: 'Communication Error'
+				})
+			})
+  }
+	else {
+    res.render('pages/login',{
+      my_title: 'Login',
+			alert_msg: '',
+    })
+  }
+});
+
+
+app.get('/new_post', function(req, res){
+    res.render('pages/post',{
+        my_title: "new post",
+        alert_msg: ''
+    })
+})
+
+app.post('/new_post/annou', function(req,res){
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        console.log("annou", req.body)
+        var title = "'" + req.body.new_title + "'"
+        var summary = "'" + req.body.new_summary + "'"
+        var desc = "'" + req.body.new_desc + "'"
+        var query1 = "INSERT INTO posts(author_id,title, summary, full_desc)VALUES("+id +","+ title + ","+ summary + "," + desc+");"
+        db.any(query1)
+            .then(function(data){
+                console.log("announcement successed\n")
+                res.render('pages/post',{
+                    title: "post/annou",
+                    alert_msg: "",
+
+                })
+            })
+            .catch(error  =>{
+                console.log("announcement failed\n")
+                res.render('pages/post',{
+                    title: "post/annou",
+                    alert_msg: error,
+                    error: error
+                })
+            })
+
+    }
+})
+
+app.post('/new_post/activity', function(req,res){
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        console.log("annou", req.body)
+        var title = "'" + req.body.new_title + "'"
+        var summary = "'" + req.body.new_summary + "'"
+        var desc = "'" + req.body.new_desc + "'"
+        var time = "'" + req.body.new_time + ":00'"
+        var date = "'" + req.body.new_date + "'"
+        console.log(time)
+        console.log(date)
+        console.log(title)
+        console.log(summary)
+        var query1 = "INSERT INTO activities(manager_id,title, activity_date, activity_time, description)VALUES("+id +","+ title + ","+ date + "," + time + "," + desc+");"
+        db.any(query1)
+            .then(function(data){
+                console.log("aactivity successed\n")
+                res.render('pages/post',{
+                    title: "post/acitity",
+                    alert_msg: "",
+
+                })
+            })
+            .catch(error  =>{
+                console.log("activity failed\n")
+                res.render('pages/post',{
+                    title: "post/activity",
+                    alert_msg: error,
+                    error: error
+                })
+            })
+
+    }
+
+})
+
+app.get('/public_post',function(req, res){
+    //var author_id =  req.body
+    if(req.cookies["account"] !=null){
+
+        var query1 = "SELECT * FROM posts ORDER BY post_id desc limit 4;"
+        var query2 = "SELECT * FROM activities ORDER BY activity_id desc limit 4;"
+        db.task('get-everything', task=>{
+            return task.batch([
+                task.any(query1),
+                task.any(query2)
+            ]);
+        })
+            .then(function(data){
+                console.log(data);
+                res.render('pages/browse',{
+                    my_title: 'Home',
+                    alert_msg: '',
+                    allpost: data[0],
+                    allactivity: data[1]
+                })
+            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/browse',{
+                    my_title: 'Home',
+                                    alert_msg: '',
+                    allpost: ''
+                })
+
+            })
+    }else{
+        res.redirect('/')
+    }
+});
+
+
+app.post('/public_post/joinactivity',function(req, res){
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        var comment = req.body
+        console.log("joinactivity", req.body)
+        /*
+        console.log(req.body)
+        var query1 = "INSERT INTO comments(post_id, author_id,commentee_ids, body)VALUES("+parseInt(temp_arr[0])+","+parseInt(temp_arr[1])+"," + id+",'"+comment+"');"
+        console.log(query1)
+        var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+        db.any(query1)
+            .then(function(data){
+                //console.log(data);
+                res.redirect('/public_post')
+            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/browse',{
+                    my_title: 'home',
+                    alert_msg: 'comment failed',
+                    allpost: ''
+                })
+
+            })
+            */
+            res.redirect('/public_post')
+    }
+
+});
+
+
+
+app.post('/public_post',function(req, res){
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        var comment = req.body.comment
+        var ids = req.body.Id
+        var temp_arr = ids.split('&') //[posy_id & author_id]
+        console.log(req.body)
+        var query1 = "INSERT INTO comments(post_id, author_id,commentee_ids, body)VALUES("+parseInt(temp_arr[0])+","+parseInt(temp_arr[1])+"," + id+",'"+comment+"');"
+        console.log(query1)
+        var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+        db.any(query1)
+            .then(function(data){
+                //console.log(data);
+                res.redirect('/public_post')
+            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/browse',{
+                    my_title: 'home',
+                    alert_msg: 'comment failed',
+                    allpost: ''
+                })
+
+            })
+    }
+
+});
+
 function hashfunc(useremail, pwd){
     var hash = crypto.createHash('md5')
     hash.update(useremail + pwd)
@@ -182,46 +406,6 @@ app.post('/registration/new_user', (req, res) => {
 		})
 });
 
-
-app.get('/home',function(req, res){
-	var currUser = req.cookies["account"];
-  if(currUser){
-    id = currUser.userid
-    var pullActivities = `SELECT * FROM activities;`;
-		var pullPosts= `select * from posts;`;
-    db.task('get-everything', task => {
-			return task.batch([
-				task.any(pullActivities),
-				task.any(pullPosts)
-			]);
-		})
-	    .then(function(data){
-				console.log("Activities\n"+data)
-				console.log("Posts\n"+data[1])
-	      res.render('pages/home',{
-	          my_title: 'Home',
-						activities: data[0],
-						posts: data[1],
-						alert_msg: '',
-	          joinpost: data
-	      })
-	    })
-			.catch (err => {
-				console.log('ERROR:' + err);
-				res.render('pages/db_error', {
-					my_title: 'Error',
-					alert_msg: 'Communication Error'
-				})
-			})
-  }
-	else {
-    res.render('pages/login',{
-      my_title: 'Login',
-			alert_msg: '',
-    })
-  }
-});
-
 app.get('/public_post',function(req, res){
     //var author_id =  req.body
 
@@ -241,39 +425,6 @@ app.get('/public_post',function(req, res){
 							my_title: 'Error',
 							alert_msg: "We're sorry; something has gone terribly wrong on our end."
 						})
-        })
-});
-
-
-app.post('/public_post',function(req, res){
-    var comment = req.body.comment
-    var ids = req.body.Id
-    var temp_arr = ids.split('&') //[posy_id & author_id]
-   //console.log(comment)
-   // console.log(ids)
-    //console.log(temp_arr)
-    //console.log(req.body)//console.log("comment:", comment)
-    var query1 = "INSERT INTO comments(post_id, author_id, body)VALUES('"+parseInt(temp_arr[0])+"','"+parseInt(temp_arr[1])+"','"+comment+"');"
-    var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-    db.task('get-everything', task=>{
-        return task.batch([
-            task.any(query1),
-            task.any(query2)
-        ])
-    })
-        .then(function(data){
-            //console.log(data);
-            res.render('pages/post',{
-                my_title: 'home',
-								alert_msg: '',
-                allpost: data[1]
-            })
-        })
-        .catch(error =>{
-					res.render('pages/error', {
-						my_title: 'Error',
-						alert_msg: "We're sorry; something has gone terribly wrong on our end."
-					})
         })
 });
 
