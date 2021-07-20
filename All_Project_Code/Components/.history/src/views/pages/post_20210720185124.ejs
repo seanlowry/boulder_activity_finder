@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="d-grid gap-2 d-md-block">
+    <button class="btn btn-primary" type="button" id="to_annouce">Announcement</button>
+    <button class="btn btn-primary" type="button" id="to_activity">Activity</button>
+</div>
+<script>
+    $("#to_annouce").click(function(){
+        $("#annou").show()
+        $("#activity").hide()
+    })
+    $("#to_activity").click(function(){
+        $("#annou").hide()
+        $("#activity").show()
+    })
+</script>
+<form id="annou" method="post" action="/new_post/annou" style="display: none;">
+    <div class="col-md-6">
+        <label  class="form-label">Title</label>
+        <input type="text" class="form-control" id="new_title" name="new_title">
+      </div>
+      <div class="col-md-6">
+        <label  class="form-label">Summary</label>
+        <input type="text" class="form-control" id="new_summary" name="new_summary">
+      </div>
+      <div class="col-12">
+        <label  class="form-label">Description</label>
+        <input type="text" class="form-control" id="new_desc" name="new_desc">
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+</form>
+
+<form id="activity" method="post" action="/new_post/activity" style="display: none; margin: auto; width: 50%;">
+  <div style="margin: auto; ">
+    <div class="row">
+      <div class="col-md-4">
+        <label  class="form-label">Title</label>
+        <input type="text" class="form-control" id="new_title" name="new_title">
+      </div>
+      <div class="col-md-4">
+        <label  class="form-label">Summary</label>
+        <input type="text" class="form-control" id="new_summary" name="new_summary">
+      </div>
+    </div>
+      <div class="row">
+        <div class="col-md-4">
+          <label  class="form-label">Date</label>
+          <input type="date" class="form-control" id="new_date" name="new_date">
+        </div>
+        <div class="col-md-4">
+          <label  class="form-label">Time</label>
+          <input type="time" class="form-control" id="new_time" name="new_time">
+        </div>
+      </div>
+       <div class="row">
+        <div class="col-8">
+          <label  class="form-label">Description</label>
+          <input type="text" class="form-control" id="new_desc" name="new_desc">
+        </div>
+       </div> 
+        
+        <br>
+        <div class="row" >
+          <div class="col-3">
+            <button type="submit" class="btn btn-primary" style="margin: auto;">Submit</button>
+          </div>
+        </div>
+        
+  </div>
+  
+</form>
+
+
+
+<%- include('../partials/footer') %>

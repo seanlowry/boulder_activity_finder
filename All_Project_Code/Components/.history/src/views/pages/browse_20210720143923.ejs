@@ -1,0 +1,110 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+<br>
+<br>
+<br>
+
+<div class="container-fluid">
+  <div class="row">
+   <div class="col-lg-6">
+    <% 
+    if(allpost){
+        var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
+        allpost.forEach(function(i){
+            
+            card += '<div class="col">';
+            card += '<div class="card" style="width: 18rem;">';
+            card += '<img src="..." class="card-img-top" alt="...">';
+            card += '<div class="card-body">';
+            card += '<h5 class="card-title">'+i.title+'</h5>';
+            card += '<p class="card-text">'+i.summary+'</p>';
+            card += '<button type="button"  class="btnmodal" name="'+ i.post_id + '&' + i.author_id +'" data-content="'+ i.title +'&'+ i.summary + '&'+ i.full_desc + '&' + i.author_id + '&' + i.post_id + '" >Comment</button>';
+            card += '</div>';
+            card += '</div>';
+            card += '</div>';
+            
+        }); %>
+        
+        <% card += '</div>'; %>
+       
+        <%- card %>
+   <% } %>
+   </div>
+   <div class="col-lg-6">  
+      <% 
+      var temp_id = 0;
+      var card1 = "";
+      var card2 = "";
+      var card3 = "";
+      var card4 = "";
+      var temp_card = "";
+      if(allactivity){
+          allactivity.forEach(function(i){
+              temp_card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
+              temp_card += '<div class="row">';
+              temp_card += '<div class="card" style="width: 18rem;">';
+              temp_card += '<div class="card-body">';
+              temp_card += '<h5 class="card-title">'+i.title+'</h5>';
+              temp_card += '<p class="card-text">'+i.description+'</p>';
+              temp_card += '<input type="hidden" id="'+ i.activity_id +'" name="join_title" value="'+i.activity_id+'">'
+              temp_card += '<button type="submit" >Join</button>';
+              temp_card += '</div>';
+              temp_card += '</div>';
+              temp_card += '</div>';
+              temp_card += '</div>';
+
+              
+              if(temp_id == 0) card1 = temp_card; 
+              if(temp_id == 1) card2 = temp_card; 
+              if(temp_id == 2) card3 = temp_card; 
+              if(temp_id == 3) card4 = temp_card;
+
+              temp_id += 1; 
+          }); %>
+          <% console.log(card1) %>
+          <% console.log(card2) %>
+      <%- card1 %>    
+      <%- card2 %>
+     <% } %>
+     
+     
+    
+   </div>
+  </div>
+</div>
+
+
+<form action="/public_post" method="post" >
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="print_info">
+
+                </div>
+                <form class="comment_box" route="/public_post" method="post">
+                    <!--
+                    <img src="../../resources/img/hiking.jpg" width=300 height=300>
+                    -->
+                    <div class="mb-3">
+                      
+                      <input type="text" class="form-control" id="comment" name="comment" placeholder="comment" >
+                      <input type="hidden" class="neededId" id="modal_id" name="Id" value="notset">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    
+                  </form>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,154 @@
+body {
+  background-color: #8fadbf;
+  font-family: Verdana, sans-serif;
+}
+.round-a {
+  border-radius: 15px 15px 15px 15px;
+}
+.round-r {
+  border-radius: 0px 15px 15px 0px;
+}
+.round-l {
+  border-radius: 15px 0px 0px 15px;
+}
+.bg-def {
+  background-color: #183140;
+}
+.cont-header {
+  color: white;
+}
+
+nav {
+  background-color: #183140;
+}
+
+img.navbar-img {
+  height: 60px;
+}
+
+button.btn-search {
+  background-color: #566873;
+  border-color: #566873;
+}
+.circlebtn{
+  border-radius: 25px;
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  color: white
+}
+
+
+#messages {
+  background-color: #183140;
+  width: 675px;
+}
+
+#messages-heading {
+ color: #F2F2F2;
+ background-color: #566873;
+}
+
+
+#messages-row {
+ height: 149px;
+}
+
+#usernames-col {
+  color: #F2F2F2;
+  font-family: Roboto;
+  font-weight: 400px;
+  font-style:normal;
+  text-align: center;
+}
+
+#messages-col {
+  width: 600px;
+  height: 149px;
+}
+
+#new-message-button {
+  display:block;
+  margin: auto;
+}
+
+#new-message-button{
+  font-family: Roboto;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  width: 271px;
+  height: 54px;
+  color: #0D0D0D;
+  letter-spacing: 1px;
+  line-height: 28.13px;
+  border: 2px solid #0D0D0D;
+  border-radius: 35px;
+  background: #F2F2F2;
+  transition: all 0.3s ease 0s;
+}
+
+#new-message-button:hover {
+  background:#0D0D0D;
+  color: #F2F2F2;
+  border: 2px solid #F2F2F2
+}
+
+#img-place-holder {
+  width: 100px;
+  height: 100px;
+}
+
+#btnmodal {
+    background-color: #000000;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 1px 1px;
+    cursor: pointer;
+    border-radius: 12px;
+
+}
+
+.big-container{
+  padding: 20px;
+  margin: auto;
+  width: 90%;
+}
+
+.left-container .right-container{
+  width: 50%;
+  float: left;
+  padding: 20px;
+}
+
+.mybutton{
+  background-color: #0d47a1;
+  border-color: #0d47a1;
+  box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.7);
+}
+
+.card{
+  box-shadow: 9px 9px 11px 4px rgba(0,0,0,0.7);
+}
+
+.content{
+  margin: auto;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 50%;
+    object-fit: cover;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.container_home{
+  width: 90%;
+  margin: auto;
+}
