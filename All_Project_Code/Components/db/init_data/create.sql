@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS posts CASCADE;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS activities;
@@ -19,44 +19,42 @@ VALUES ('Big','Boss','admin','admin@123.com','admin'),
 ('David', 'Farrow', 'dafa', 'dafa9718@colorado.edu', 'password'),
 ('Xiang', 'Chen', 'xich', 'xich4932@colorado.edu', 'password');
 
-/*
-members implement with member id&id&id to record who join the activities
-*/
-
 CREATE TABLE IF NOT EXISTS activities(
   activity_id SERIAL PRIMARY KEY,
   manager_id INT NOT NULL,
   member_ids INT[],
   title VARCHAR(30) NOT NULL,
-  activity_date DATE NOT NULL,
-  activity_time TIME NOT NULL,
-  description TEXT NOT NULL,
+  summary VARCHAR (256) NOT NULL,
+  body TEXT NOT NULL,
+  activity_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  update_time TIMESTAMP WITH TIME ZONE NOT NULL,
   FOREIGN KEY (manager_id)
     REFERENCES users(user_id)
 );
 
-INSERT INTO activities(manager_id, member_ids, title, activity_date, activity_time, description)
-VALUES(1,'{1,2,3}', 'first activity', '2021-07-07', '12:00:00', 'a plan to do something'),
-(1,'{1,2,3,4}', 'second activity', '2021-07-21', '13:00:00', 'a plan to do something');
+INSERT INTO activities(manager_id, member_ids, title, summary, activity_time, body, update_time)
+VALUES(1,'{1,2,3}', 'Pick-Up Basketball Game', 'We are wanting to play some 5v5', '2021-07-07 18:00:00', 'just a friendly game of basketball', CURRENT_TIMESTAMP),
+(1,'{1,2,3,4}', 'Hiking Mt. Elbert', 'I have a small group that is going to be hiking this mountain next weekend', '2021-07-25 06:00:00', 'We are willing to work out a carpool situation to get out to the trail together', CURRENT_TIMESTAMP);
 
 CREATE TABLE IF NOT EXISTS posts(
   post_id SERIAL PRIMARY KEY,
   author_id INT NOT NULL,
   title VARCHAR(50),
+  summary VARCHAR(256),
   img_src TEXT,
-  body VARCHAR(255) NOT NULL,
-  full_desc TEXT,
+  body TEXT,
+  update_time TIMESTAMP WITH TIME ZONE NOT NULL,
   FOREIGN KEY (author_id)
   REFERENCES users(user_id)
 );
 
-INSERT INTO  posts(author_id, title, body, full_desc)
-VALUES (1, 'PostTitle', 'This is the brief description of the post', 'And this will be a longer description'),
-(2,'Hiking?', 'Looking for someone interested in hiking', 'join us via XXXXXXXXX'),
-(2,'lost shoe', 'I lost my shoe during snowboarding', 'please contact me when you found it'),
-(3,'how much is the ticket for fishing?', '', 'Me and friends plan to go there this week'),
-(3,'Any party tonight?', '', ''),
-(4,'Will CS final cancelled due to the upcoming storm', '', 'I really appreciate ');
+INSERT INTO  posts(author_id, title, summary, body, update_time)
+VALUES (1, 'Sample Title', 'This is the brief description of the post (limit 256 characters)', 'And this can be a longer description', CURRENT_TIMESTAMP),
+(2,'Hiking?', 'Looking for someone interested in hiking', 'join us via XXXXXXXXX', CURRENT_TIMESTAMP),
+(2,'lost shoe', 'I lost my shoe during snowboarding', 'please contact me when you found it', CURRENT_TIMESTAMP),
+(3,'how much is the ticket for fishing?', '', 'Me and friends plan to go there this week', CURRENT_TIMESTAMP),
+(3,'Any party tonight?', '', '', CURRENT_TIMESTAMP),
+(4,'Will CS final cancelled due to the upcoming storm', '', 'I really appreciate ', CURRENT_TIMESTAMP);
 
 
 CREATE TABLE IF NOT EXISTS messages(
@@ -64,6 +62,7 @@ CREATE TABLE IF NOT EXISTS messages(
   author_id INT NOT NULL,
   recipient_id INT NOT NULL,
   body TEXT NOT NULL,
+  send_time TIMESTAMP WITH TIME ZONE NOT NULL,
   FOREIGN KEY (author_id)
     REFERENCES users(user_id),
   FOREIGN KEY (recipient_id)
@@ -77,11 +76,12 @@ CREATE TABLE IF NOT EXISTS comments(
   commentee_ids INT NOT NULL,
   img_src TEXT,
   body VARCHAR(255),
+  update_time TIMESTAMP WITH TIME ZONE NOT NULL,
   FOREIGN KEY (author_id)
     REFERENCES users(user_id),
   FOREIGN KEY (post_id)
     REFERENCES posts(post_id)
 );
 
-INSERT INTO comments(post_id, author_id, commentee_ids, body)
-VALUES(1,1,1,'first comment');
+INSERT INTO comments(post_id, author_id, commentee_ids, body, update_time)
+VALUES(1,1,1,'first comment', CURRENT_TIMESTAMP);

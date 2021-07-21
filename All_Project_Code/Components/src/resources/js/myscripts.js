@@ -43,6 +43,23 @@ $(function(){
   })
 })
 
+function format_timestamp(timestamp) {
+  var date_arr = timestamp.toString().split(" ")
+  var ret = {};
+  ret["full"] = date_arr;
+  ret["weekday"] = date_arr[0];
+  ret["month"] = date_arr[1];
+  ret["day"] = date_arr[2];
+  ret["year"] = date_arr[3];
+  ret["date"] = `${date_arr[1]} ${date_arr[2]}, ${date_arr[3]}`;
+  var time = date_arr[4].split(":");
+  var hour = time[0]
+  let ampm = (Number(hour) < 12) ? "a.m." :  "p.m.";
+  hour = Number(hour)%12;
+  time = `${hour.toString()}:${time[1]} ${ampm}`;
+  ret["time"] = time;
+  return ret;
+}
 
 function validateForm() {
   if (!checkUsernameAvail()) {
@@ -148,9 +165,9 @@ function createICSfile(id){
     console.log(ele.getAttribute('data-content'))
     var params = ele.getAttribute('data-content').split("&")
     var temp_date = params[2].split(' ')
-    var temp_time = params[3].split(':')
-    console.log(temp_time)
-    console.log(temp_date)
+    console.log("date:"+temp_date)
+    var temp_time = temp_date[4].split(':')
+    console.log("time:"+temp_time)
     var event_str = "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
     "METHOD:PUBLISH\n" +
@@ -167,10 +184,10 @@ function createICSfile(id){
     "DTSTART:19700101T000000\n" +
     "END:STANDARD\n" +
     "END:VTIMEZONE\n"+
-    "BEGIN:VEVENT\n" + 
+    "BEGIN:VEVENT\n" +
      "UID:" +
          Math.random().toString(36).substring(2) +
-     "\n" + 
+     "\n" +
      "DTSTART;" + "TZID=America/Denver:" +
      temp_date[2] + retMonth(temp_date[0]) + temp_date[1] + "T" + temp_time[0] + temp_time[1] + temp_time[2] +
      "\n" +
@@ -179,11 +196,11 @@ function createICSfile(id){
      "\n" +
      "TZID:America/Denver\n" +
      "SUMMARY:" +
-      params[0] + 
+      params[0] +
      "\n" +
      "DESCRIPTION:" + params[1] +
      "\n" +
-     "BEGIN:VALARM\n" +                                                                       
+     "BEGIN:VALARM\n" +
      "TRIGGER:-PT10M\n" +
      "ACTION:DISPLAY\n" +
     "DESCRIPTION:Reminder\n" +
@@ -191,7 +208,7 @@ function createICSfile(id){
      "END:VEVENT\n" +
     "END:VCALENDAR";
     console.log(event_str)
-    
+
     let data = new Blob([event_str], { type: "text/plain" });
     if (icsFile !== null) {
       window.URL.revokeObjectURL(icsFile);
@@ -199,5 +216,3 @@ function createICSfile(id){
     icsFile = window.URL.createObjectURL(data);
     return  icsFile;
 }
-
-

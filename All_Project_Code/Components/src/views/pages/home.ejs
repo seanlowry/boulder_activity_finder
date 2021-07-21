@@ -1,32 +1,112 @@
 <%- include('../partials/header'); %>
 <%- include('../partials/navbar'); %>
-<br>
-<br>
-<br>
 
-<% if(posts){
+<div class="row justify-content-center my-4">
+  <div class="col-sm-5">
+    <div class="container round-a py-2 bg-def">
+      <h3 class="cont-header">Activities</h3>
+      <%
+        function format_timestamp(date) {
+          var date_arr = date.toString().split(" ")
+          var ret = {};
+          ret["full"] = date_arr;
+          ret["weekday"] = date_arr[0];
+          ret["month"] = date_arr[1];
+          ret["day"] = date_arr[2];
+          ret["year"] = date_arr[3];
+          ret["date"] = `${date_arr[1]} ${date_arr[2]}, ${date_arr[3]}`;
+          var time = date_arr[4].split(":");
+          var hour = time[0]
+          let ampm = (Number(hour) < 12) ? "a.m." :  "p.m.";
+          hour = Number(hour)%12;
+          time = `${hour.toString()}:${time[1]} ${ampm}`;
+          ret["time"] = time;
+          return ret;
+        }
 
-    var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
-    posts.forEach(function(i){
-        console.log(i)
-        card += '<div class="card" style="width: 18rem;">';
-        card += '<img src="../../resources/img/hiking.jpg" class="card-img-top" alt="..." style="height: 300;width: 330;">';
-        card += '<div class="card-body">';
-        if (i.title) {
-          card += '<h5 class="card-title">'+i.title+'</h5>';
+        card = '';
+        if(activities){
+          activities.forEach(function(i){
+            console.log(i)
+            card += '<div class="card round-a my-2" style="width: 100%;">';
+              card += '<img class="round-a" src="../../resources/img/hiking.jpg" class="card-img-top" alt="..." style="height: 300;width: 330;">';
+              card += '<div class="card-body">';
+                var download_data = '';
+                card += '<h4 class="card-title">'+i.title+'</h4>';
+                download_data += i.title;
+                card += '<p class="card-subtitle text-muted">'+i.summary+'</p>';
+                download_data += `&${i.summary}`;
+                card += `<button class="btn btn-outline-secondary my-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-a-${i.activity_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
+                card += `<div class="collapse" id="col-a-${i.activity_id}">`;
+                  var activityArray = format_timestamp(i.activity_time);
+                  card += `<p class="card-text"><small class="text-muted">Date </small>${activityArray["date"]}</p>`;
+                  card += `<p class="card-text"><small class="text-muted">Time </small>${activityArray["time"]}</p>`;
+                  download_data += `&${i.activity_time}`;
+                  if (i.body) {
+                    card += '<p class="card-text">'+i.body+'</p>';
+                    download_data += `&${i.body}`;
+                  }
+                  else {
+                    download_data += `$`;
+                  }
+                  card += `<a href="#" class="btn btn-primary" onclick="start_download(${i.activity_id})" id="${i.activity_id}" data-content="${download_data}">Add to Calendar</a>`;
+                  var updateArray = format_timestamp(i.update_time);
+                  card += `<div class="card-footer mt-2"><small class="text-muted">Last Update: ${updateArray["date"]} @ ${updateArray["time"]}</small></div>`;
+                card += `</div>`;
+              card += `</div>`;
+            card += `</div>`;
+          });
         }
-        if (i.description) {
-          card += '<p class="card-text">'+i.description+'</p>';
+        else {
+          card += `<p>No activities available to show</p>`
         }
-        if (i.activity_time) {
-          card += '<p class="card-text">'+i.activity_time.toString().substring(0,8) + i.activity_date.toString().substring(4,15)+'</p>';
-        }
-        card += '<a href="#" class="btn btn-primary" onclick="start_download('+i.activity_id+')" id="'+i.activity_id+'" data-content="'+i.title +  "&" + i.description + "&" + i.activity_date.toString().substring(4,15) + "&" + i.activity_time.toString().substring(0,8)  + '" >Download</a>';
-        card += '</div>';
-        card += '</div>';
-    }); %>
-    <% card += '</div>'; %>
-    <%- card %>
-<%}%>
+      %>
+      <%- card %>
+    </div>
+  </div>
+  <div class="col-sm-5">
+    <div class="container round-a py-2 bg-def">
+      <h3 class="cont-header">Posts</h3>
+      <%
+          card = '';
+          if(posts){
+            posts.forEach(function(i){
+              console.log(i)
+              card += '<div class="card round-a my-2" style="width: 100%;">';
+                card += '<div class="card-body">';
+                  var download_data = '';
+                  card += '<h5 class="card-title">'+i.title+'</h5>';
+                  download_data += i.title;
+                  card += '<p class="card-subtitle text-muted">'+i.summary+'</p>';
+                  download_data += i.summary;
+                  card += `<button class="btn btn-outline-secondary my-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-p-${i.post_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
+                  card += `<div class="collapse" id="col-p-${i.post_id}">`;
+                    if (i.activity_time) {
+                      var activityArray = format_timestamp(i.activity_time);
+                      card += `<p class="card-text"><small class="text-muted">Date: </small>${activityArray["date"]}</p>`;
+                      card += `<p class="card-text"><small class="text-muted">Time: </small>${activityArray["time"]}</p>`;
+                      download_data += `&${activityArray["date"]}&${activityArray["time"]}`;
+                    }
+                    if (i.body) {
+                      card += '<p class="card-text">'+i.body+'</p>';
+                      download_data += `&${i.body}`;
+                    }
+                    var updateArray = format_timestamp(i.update_time);
+                    card += `<div class="card-footer mt-2 pb-0"><small class="text-muted">Last Update: ${updateArray["date"]} @ ${updateArray["time"]}</small></div>`;
+                  card += `</div>`;
+                card += `</div>`;
+              card += `</div>`;
+            });
+          }
+          else {
+            card += `<p>No posts available to show</p>`
+          }
+        %>
+        <%- card %>
+    </div>
+  </div>
+</div>
+
+
 
 <%- include('../partials/footer'); %>

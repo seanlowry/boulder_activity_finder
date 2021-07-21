@@ -68,22 +68,33 @@
         </ul>
       </div>
     </nav>
-
-    <br>
-    <br>
-    <div class="row justify-content-around">
+    <div class="row justify-content-center">
+      <div class="col-2">
+        <input class="round-a" type="date" name="activityDate" value="">
+      </div>
+      <div class="col-2">
+        <input class="round-a" type="time" name="activityTime" value="">
+      </div>
+    </div>
+    <div class="row justify-content-around my-4">
       <div class="col-sm-5">
         <div class="container round-a py-2 bg-def">
           <h3 class="cont-header">Activites</h3>
-            <div class="card round-a mb-1" style="max-width: 50%">
+            <div class="card round-a mb-1" style="max-width: 100%">
               <img class="round-a" src="../../resources/img/hiking.jpg" alt="mountain_photo">
               <div class="card-body">
                 <h5 class="card-title">
                   Card Title
                 </h5>
-                <p class="card-text">
+                <p class="card-subtitle">
                   Card Body
                 </p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseID" aria-expanded="false" aria-controls="collapseID">Details</button>
+                <div class="collapse" id="collapseID">
+                  <div class="card-body">
+                    <p>This is the text that I want to be hidden when collapsed</p>
+                  </div>
+                </div>
               </div>
             </div>
         </div>
@@ -91,78 +102,19 @@
       <div class="col-sm-5">
         <div class="container round-a py-2 bg-def" >
           <h3 class="cont-header">Posts</h3>
-          <div class="card-columns">
-            <div class="card round-a">
-              <img class="round-a" src="../../resources/img/hiking.jpg" alt="mountain_photo" width=100%>
+            <div class="card round-a mb-1" style="max-width: 100%;">
               <div class="card-body">
                 <h5 class="card-title">
                   Card Title
                 </h5>
-                <p class="card-text">
-                  Card Body
+                <p class="card-subtitle">
+                  Summary
                 </p>
               </div>
               <div class="card-footer">
                 <small class="text-muted">Last Updated on June 20, 2021</small>
               </div>
             </div>
-            <div class="card round-a">
-              <img class="round-a" src="../../resources/img/hiking.jpg" alt="mountain_photo" width=100%>
-              <div class="card-body">
-                <h5 class="card-title">
-                  Card Title
-                </h5>
-                <p class="card-text">
-                  Card Body
-                </p>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last Updated on June 20, 2021</small>
-              </div>
-            </div>
-            <div class="card round-a">
-              <img class="round-a" src="../../resources/img/hiking.jpg" alt="mountain_photo" width=100%>
-              <div class="card-body">
-                <h5 class="card-title">
-                  Card Title
-                </h5>
-                <p class="card-text">
-                  Card Body
-                </p>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last Updated on June 20, 2021</small>
-              </div>
-            </div>
-            <div class="card round-a">
-              <img class="round-a" src="../../resources/img/hiking.jpg" alt="mountain_photo" width=100%>
-              <div class="card-body">
-                <h5 class="card-title">
-                  Card Title
-                </h5>
-                <p class="card-text">
-                  Card Body
-                </p>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last Updated on June 20, 2021</small>
-              </div>
-            </div>
-            <div class="card round-a">
-              <img class="round-a" src="../../resources/img/hiking.jpg" alt="mountain_photo" width=100%>
-              <div class="card-body">
-                <h5 class="card-title">
-                  Card Title
-                </h5>
-                <p class="card-text">
-                  Card Body
-                </p>
-              </div>
-              <div class="card-footer">
-                <small class="text-muted">Last Updated on June 20, 2021</small>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
