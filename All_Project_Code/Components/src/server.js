@@ -138,6 +138,30 @@ app.get('/home',function(req, res){
 });
 
 
+app.get('/search', (req, res) => {
+	var input = req.query.user_search;
+	console.log(input)
+	var query1 = `select * from activities where title ilike '%${input}%' or summary ilike '%${input}%' or body ilike '%${input}%';`
+	var query2 = `select * from posts where title ilike '%${input}%' or summary ilike '%${input}%' or body ilike '%${input}%';`
+	db.task('get-everything', task => {
+		return task.batch([
+			task.any(query1),
+			task.any(query2)
+		]);
+	})
+	.then(data => {
+		res.render('pages/home', {
+			my_title: 'Search',
+			activities: data[0],
+			posts: data[1]
+		})
+	})
+	.catch(err => {
+		console.log("ERROR: "+err)
+	})
+})
+
+
 app.get('/new_post', function(req, res){
     res.render('pages/post',{
         my_title: "new post",
@@ -155,7 +179,7 @@ app.post('/new_post/annou', function(req,res){
         var title = "'" + req.body.new_title + "'"
         var summary = "'" + req.body.new_summary + "'"
         var desc = "'" + req.body.new_desc + "'"
-        var query1 = "INSERT INTO posts(author_id,title, summary, full_desc)VALUES("+id +","+ title + ","+ summary + "," + desc+");"
+        var query1 = "INSERT INTO posts(author_id,title, summary, body, update_time)VALUES("+id +","+ title + ","+ summary + "," + desc+", CURRENT_TIMESTAMP);"
         db.any(query1)
             .then(function(data){
                 console.log("announcement successed\n")
@@ -195,7 +219,7 @@ app.post('/new_post/activity', function(req,res){
         console.log(date)
         console.log(title)
         console.log(summary)
-        var query1 = "INSERT INTO activities(manager_id,title, activity_date, activity_time, description)VALUES("+id +","+ title + ","+ date + "," + time + "," + desc+");"
+        var query1 = "INSERT INTO activities(manager_id,title, summary, body, activity_time, update_time)VALUES("+id +","+ title + ","+ summary + "," + desc + "," + date + " " + time + ", CURRENT_TIMESTAMP);"
         db.any(query1)
             .then(function(data){
                 console.log("aactivity successed\n")
@@ -515,6 +539,12 @@ app.post('/registration/new_user', (req, res) => {
 			})
 		})
 });
+
+app.get('/user_settings', (req, res) => {
+	res.render('pages/user_settings', {
+		my_title: 'User Settings'
+	})
+})
 
 app.get('/logout', (req,res) => {
 	var user = req.cookies["account"];

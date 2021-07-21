@@ -3,7 +3,7 @@
 
 <div class="row justify-content-center my-4">
   <div class="col-sm-5">
-    <div class="container round-a py-2 bg-def">
+    <div class="container round-a py-2">
       <h3 class="cont-header">Activities</h3>
       <%
         function format_timestamp(date) {
@@ -65,7 +65,7 @@
     </div>
   </div>
   <div class="col-sm-5">
-    <div class="container round-a py-2 bg-def">
+    <div class="container round-a py-2">
       <h3 class="cont-header">Posts</h3>
       <%
           card = '';
@@ -81,12 +81,6 @@
                   download_data += i.summary;
                   card += `<button class="btn btn-outline-secondary my-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-p-${i.post_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
                   card += `<div class="collapse" id="col-p-${i.post_id}">`;
-                    if (i.activity_time) {
-                      var activityArray = format_timestamp(i.activity_time);
-                      card += `<p class="card-text"><small class="text-muted">Date: </small>${activityArray["date"]}</p>`;
-                      card += `<p class="card-text"><small class="text-muted">Time: </small>${activityArray["time"]}</p>`;
-                      download_data += `&${activityArray["date"]}&${activityArray["time"]}`;
-                    }
                     if (i.body) {
                       card += '<p class="card-text">'+i.body+'</p>';
                       download_data += `&${i.body}`;
