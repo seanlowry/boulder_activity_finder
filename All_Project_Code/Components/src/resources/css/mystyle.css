@@ -12,11 +12,15 @@ body {
 .round-l {
   border-radius: 15px 0px 0px 15px;
 }
+.card-footer {
+  background-color: #d7d6d6;
+}
 .bg-def {
-  background-color: #183140;
+  /* background-color: #183140; */
 }
 .cont-header {
-  color: white;
+  /* color: white; */
+  font-weight: bold;
 }
 
 nav {

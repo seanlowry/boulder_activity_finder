@@ -114,6 +114,7 @@ app.get('/home',function(req, res){
 				console.log("Posts\n"+data[1])
 	      res.render('pages/home',{
 	          my_title: 'Home',
+						currUser: currUser,
 						activities: data[0],
 						posts: data[1],
 						alert_msg: '',
@@ -264,7 +265,7 @@ app.get('/public_post',function(req, res){
             ]);
         })
             .then(function(data){
-                
+
                 res.render('pages/browse',{
                     my_title: 'Home',
                     alert_msg: '',
@@ -299,27 +300,27 @@ app.post('/public_post/join_0',function(req, res){
         id = account.userid
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
-        
+
         console.log(req.body)
         var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
         console.log(query1)
-        
+
         db.any(query1)
             .then(function(data){
                 //console.log(data);
                 res.redirect('/public_post')
             })
             .catch(error =>{
-                
+
                 console.log("Error", error)
                 res.render('pages/browse',{
                     my_title: '\public_post',
                     alert_msg: 'join failed',
-                    
+
                 })
 
             })
-            
+
         res.redirect('/public_post')
     }
 
@@ -333,27 +334,27 @@ app.post('/public_post/join_1',function(req, res){
         id = account.userid
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
-        
+
         console.log(req.body)
         var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
         console.log(query1)
-        
+
         db.any(query1)
             .then(function(data){
                 //console.log(data);
                 res.redirect('/public_post')
             })
             .catch(error =>{
-                
+
                 console.log("Error", error)
                 res.render('pages/browse',{
                     my_title: '\public_post',
                     alert_msg: 'join failed',
-                    
+
                 })
 
             })
-            
+
         res.redirect('/public_post')
     }
 
@@ -367,27 +368,27 @@ app.post('/public_post/join_2',function(req, res){
         id = account.userid
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
-        
+
         console.log(req.body)
         var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
         console.log(query1)
-        
+
         db.any(query1)
             .then(function(data){
                 //console.log(data);
                 res.redirect('/public_post')
             })
             .catch(error =>{
-                
+
                 console.log("Error", error)
                 res.render('pages/browse',{
                     my_title: '\public_post',
                     alert_msg: 'join failed',
-                    
+
                 })
 
             })
-            
+
         res.redirect('/public_post')
     }
 
@@ -401,27 +402,27 @@ app.post('/public_post/join_3',function(req, res){
         id = account.userid
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
-        
+
         console.log(req.body)
         var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
         console.log(query1)
-        
+
         db.any(query1)
             .then(function(data){
                 //console.log(data);
                 res.redirect('/public_post')
             })
             .catch(error =>{
-                
+
                 console.log("Error", error)
                 res.render('pages/browse',{
                     my_title: '\public_post',
                     alert_msg: 'join failed',
-                    
+
                 })
 
             })
-            
+
         res.redirect('/public_post')
     }
 
@@ -517,7 +518,9 @@ app.post('/registration/new_user', (req, res) => {
 
 app.get('/logout', (req,res) => {
 	var user = req.cookies["account"];
-	console.log(user)
+	console.log(user);
+	res.cookie('account', null);
+	res.redirect('/');
 });
 
 //app.listen(3000);
