@@ -101,7 +101,7 @@ app.get('/home',function(req, res){
   if(currUser){
     id = currUser.userid
     //only select the activities current user joins
-    var pullActivities = "SELECT * FROM activities WHERE " + id +" = ANY(member_ids) ;";
+    var pullActivities = `SELECT * FROM activities WHERE ${id} = ANY(member_ids) or ${id} = manager_id;`;
 		var pullPosts= `select * from posts;`;
     db.task('get-everything', task => {
 			return task.batch([
@@ -161,12 +161,36 @@ app.get('/search', (req, res) => {
 	})
 })
 
+app.get('/new_activity', (req,res) => {
+	var userId = req.cookies["account"].userid;
+	var title = req.query.act_title;
+	var summary = req.query.act_summary;
+	var date = req.query.act_date;
+	var time = req.query.act_time;
+	var body = req.query.act_body;
+	var insert = `insert into activities(manager_id, member_ids, title, summary, body, activity_time, update_time) values ('${userId}','{${userId}}','${title}','${summary}','${body}','${date} ${time}', CURRENT_TIMESTAMP);`;
+	db.any(insert)
+	.then(data => {
+		res.redirect('/home')
+	})
+	.catch(err => {
+		console.log("ERROR: "+err);
+	})
+})
 
-app.get('/new_post', function(req, res){
-    res.render('pages/post',{
-        my_title: "new post",
-        alert_msg: ''
-    })
+app.get('/new_post', (req,res) => {
+	var userId = req.cookies["account"].userid;
+	var title = req.query.act_title;
+	var summary = req.query.act_summary;
+	var body = req.query.act_body;
+	var insert = `insert into posts(author_id, title, summary, body, update_time) values ('${userId}','${title}','${summary}','${body}', CURRENT_TIMESTAMP);`;
+	db.any(insert)
+	.then(data => {
+		res.redirect('/home')
+	})
+	.catch(err => {
+		console.log("ERROR: "+err);
+	})
 })
 
 app.post('/new_post/annou', function(req,res){

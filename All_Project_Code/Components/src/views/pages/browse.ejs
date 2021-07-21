@@ -7,14 +7,14 @@
 <div class="container-fluid">
   <div class="row">
    <div class="col-lg-6">
-    <% 
+    <%
     if(allpost){
         var card = '<div class="row row-cols-1 row-cols-md-3 g-4">';
         allpost.forEach(function(i){
-            
+
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
-            
+
             card += '<div class="card-body">';
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.summary+'</p>';
@@ -22,17 +22,17 @@
             card += '</div>';
             card += '</div>';
             card += '</div>';
-            
+
         }); %>
-        
+
         <% card += '</div>'; %>
-       
+
         <%- card %>
    <% } %>
    </div>
-   <div class="col-lg-6">  
+   <div class="col-lg-6">
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <% 
+      <%
       var temp_id = 0;
       var card1 = "";
       var card2 = "";
@@ -53,23 +53,23 @@
               temp_card += '</div>';
               temp_card += '</div>';
               temp_card += '</form>'
-              if(temp_id == 0) card1 = temp_card; 
-              if(temp_id == 1) card2 = temp_card; 
-              if(temp_id == 2) card3 = temp_card; 
+              if(temp_id == 0) card1 = temp_card;
+              if(temp_id == 1) card2 = temp_card;
+              if(temp_id == 2) card3 = temp_card;
               if(temp_id == 3) card4 = temp_card;
 
               temp_id += 1;
-              temp_card = ''; 
+              temp_card = '';
           }); %>
-      
-      <%- card1 %>    
+
+      <%- card1 %>
       <%- card2 %>
       <%- card3 %>
       <%- card4 %>
      <% } %>
-     
+
         </div>
-    
+
    </div>
   </div>
 </div>
@@ -92,19 +92,18 @@
                     <img src="../../resources/img/hiking.jpg" width=300 height=300>
                     -->
                     <div class="mb-3">
-                      
+
                       <input type="text" class="form-control" id="comment" name="comment" placeholder="comment" >
                       <input type="hidden" class="neededId" id="modal_id" name="Id" value="notset">
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                    
+
                   </form>
             </div>
-    
+
           </div>
         </div>
       </div>
-    </div>
   </form>
 
 

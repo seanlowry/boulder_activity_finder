@@ -4,7 +4,50 @@
 <div class="row justify-content-center my-4">
   <div class="col-sm-5">
     <div class="container round-a py-2">
-      <h3 class="cont-header">Activities</h3>
+      <div class="row justify-content-between">
+        <h3 class="cont-header">Activities</h3>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#activity_modal">Create Activity</button>
+        <div class="modal fade" id="activity_modal" tabindex="-1" role="dialog" aria-labelledby="act_modal_title" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="act_modal_title">Create a New Activity</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="/new_activity" method="get">
+                <div class="modal-body">
+                    <div class="form-row">
+                      <label for="act-title">Title</label>
+                      <input class="form-control" type="text" name="act_title" value="" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="act-summary">Brief Description</label>
+                      <input class="form-control" type="text" name="act_summary" value="" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="act-date">Date</label>
+                      <input class="form-control" type="date" name="act_date" value="" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="act-time">Time</label>
+                      <input class="form-control" type="time" name="act_time" value="" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="act-body">Additional Details</label>
+                      <input class="form-control" type="text" name="act_body" value="" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <input type="submit" value="Post" class="btn btn-primary"></input>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       <%
         function format_timestamp(date) {
           var date_arr = date.toString().split(" ")
@@ -66,7 +109,42 @@
   </div>
   <div class="col-sm-5">
     <div class="container round-a py-2">
-      <h3 class="cont-header">Posts</h3>
+      <div class="row justify-content-between">
+        <h3 class="cont-header">Posts</h3>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#post_modal">Create Post</button>
+        <div class="modal fade" id="post_modal" tabindex="-1" role="dialog" aria-labelledby="post_modal_title" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="post_modal_title">Create a New Activity</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form action="/new_post" method="get">
+                <div class="modal-body">
+                    <div class="form-row">
+                      <label for="act-title">Title</label>
+                      <input class="form-control" type="text" name="act_title" value="" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="act-summary">Brief Description</label>
+                      <input class="form-control" type="text" name="act_summary" value="" required>
+                    </div>
+                    <div class="form-row">
+                      <label for="act-body">Additional Details</label>
+                      <input class="form-control" type="text" name="act_body" value="" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <input type="submit" value="Post" class="btn btn-primary"></input>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       <%
           card = '';
           if(posts){
