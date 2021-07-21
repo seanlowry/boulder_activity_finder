@@ -14,7 +14,7 @@
             
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
-            
+            card += '<img src="..." class="card-img-top" alt="...">';
             card += '<div class="card-body">';
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.summary+'</p>';
@@ -43,16 +43,15 @@
           allactivity.forEach(function(i){
               temp_card += '<div class="col">';
               temp_card += '<div class="card" style="width: 18rem;">';
-              temp_card += '<form method="post" action="/public_post/join_'+ temp_id +'">'
               temp_card += '<div class="card-body">';
               temp_card += '<h5 class="card-title">'+i.title+'</h5>';
               temp_card += '<p class="card-text">'+i.description+'</p>';
-              temp_card += '<input type="hidden" id="'+ i.activity_id +'" name="activity_id" value="'+i.activity_id+'">'
-              temp_card += '<button class="mybutton" type="submit" >Join</button>';
+              temp_card += '<input type="hidden" id="'+ i.activity_id +'" name="join_title" value="'+i.activity_id+'">'
+              temp_card += '<button type="submit" >Join</button>';
               temp_card += '</div>';
               temp_card += '</div>';
               temp_card += '</div>';
-              temp_card += '</form>'
+              
               if(temp_id == 0) card1 = temp_card; 
               if(temp_id == 1) card2 = temp_card; 
               if(temp_id == 2) card3 = temp_card; 

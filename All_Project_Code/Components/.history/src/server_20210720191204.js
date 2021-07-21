@@ -61,7 +61,7 @@ app.post('/login',function(req, res){
 						 var getUserInfo = `select user_id, firstname, username from users where username = '${input}' or email = '${input}';`;
 						 db.any(getUserInfo)
 							 .then(data2 => {
-								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 6000000})
+								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 60000})
 								 res.redirect('/home')
 							 })
 							 .catch (err => {
@@ -216,40 +216,6 @@ app.post('/new_post/activity', function(req,res){
     }
 
 })
-
-
-app.post('/public_post',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        var comment = req.body.comment
-        var ids = req.body.Id
-        var temp_arr = ids.split('&') //[posy_id & author_id]
-        console.log(req.body)
-        var query1 = "INSERT INTO comments(post_id, author_id,commentee_ids, body)VALUES("+parseInt(temp_arr[0])+","+parseInt(temp_arr[1])+"," + id+",'"+comment+"');"
-        console.log(query1)
-        var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
-        db.any(query1)
-            .then(function(data){
-                //console.log(data);
-                res.redirect('/public_post')
-            })
-            .catch(error =>{
-                console.log("fail")
-                console.log("Error", error)
-                res.render('pages/browse',{
-                    my_title: 'home',
-                    alert_msg: 'comment failed',
-                    allpost: ''
-                })
-
-            })
-    }
-
-});
-
 
 app.get('/public_post',function(req, res){
     //var author_id =  req.body
@@ -428,6 +394,39 @@ app.post('/public_post/join_3',function(req, res){
 });
 
 
+
+app.post('/public_post',function(req, res){
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        var comment = req.body.comment
+        var ids = req.body.Id
+        var temp_arr = ids.split('&') //[posy_id & author_id]
+        console.log(req.body)
+        var query1 = "INSERT INTO comments(post_id, author_id,commentee_ids, body)VALUES("+parseInt(temp_arr[0])+","+parseInt(temp_arr[1])+"," + id+",'"+comment+"');"
+        console.log(query1)
+        var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+        db.any(query1)
+            .then(function(data){
+                //console.log(data);
+                res.redirect('/public_post')
+            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/browse',{
+                    my_title: 'home',
+                    alert_msg: 'comment failed',
+                    allpost: ''
+                })
+
+            })
+    }
+
+});
+
 function hashfunc(useremail, pwd){
     var hash = crypto.createHash('md5')
     hash.update(useremail + pwd)
@@ -494,7 +493,7 @@ app.post('/registration/new_user', (req, res) => {
 					]);
 				})
 					.then(data1 => {
-						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 6000000})
+						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 60000})
 						res.redirect('/home')
 					})
 					.catch(err => {
@@ -515,9 +514,26 @@ app.post('/registration/new_user', (req, res) => {
 		})
 });
 
-app.get('/logout', (req,res) => {
-	var user = req.cookies["account"];
-	console.log(user)
+app.get('/public_post',function(req, res){
+    //var author_id =  req.body
+
+    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    db.any(query)
+        .then(function(data){
+            //console.log(data);
+            res.render('pages/post',{
+                my_title: 'Home',
+								alert_msg: '',
+                allpost: data
+            })
+        })
+        .catch(error =>{
+            console.log("Error", error)
+						res.render('pages/error', {
+							my_title: 'Error',
+							alert_msg: "We're sorry; something has gone terribly wrong on our end."
+						})
+        })
 });
 
 //app.listen(3000);

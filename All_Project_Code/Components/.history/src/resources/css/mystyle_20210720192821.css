@@ -1,6 +1,5 @@
 body {
   background-color: #8fadbf;
-  color: #183140;
   font-family: Verdana, sans-serif;
 }
 .round-a {
@@ -146,7 +145,6 @@ button.btn-search {
 .card{
   box-shadow: 9px 9px 11px 4px rgba(0,0,0,0.7);
   border-radius: 10px;
-  background-color: #d7d6d6;
 }
 
 .content{

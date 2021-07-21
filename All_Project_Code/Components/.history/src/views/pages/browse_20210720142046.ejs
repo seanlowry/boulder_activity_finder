@@ -14,7 +14,7 @@
             
             card += '<div class="col">';
             card += '<div class="card" style="width: 18rem;">';
-            
+            card += '<img src="..." class="card-img-top" alt="...">';
             card += '<div class="card-body">';
             card += '<h5 class="card-title">'+i.title+'</h5>';
             card += '<p class="card-text">'+i.summary+'</p>';
@@ -30,46 +30,48 @@
         <%- card %>
    <% } %>
    </div>
-   <div class="col-lg-6">  
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+   <div class="col-lg-6">
+    <div class="col-lg-6">
+      
       <% 
       var temp_id = 0;
       var card1 = "";
       var card2 = "";
       var card3 = "";
       var card4 = "";
-      var temp_card = '';
+      var temp_card = "";
       if(allactivity){
+          
           allactivity.forEach(function(i){
+              temp_card = '<form id="'i.activity_id+'" method="POST" action="/public_post/joinactivity">';
+              temp_card += '<div class="row row-cols-1 row-cols-md-3 g-4">';
               temp_card += '<div class="col">';
               temp_card += '<div class="card" style="width: 18rem;">';
-              temp_card += '<form method="post" action="/public_post/join_'+ temp_id +'">'
               temp_card += '<div class="card-body">';
               temp_card += '<h5 class="card-title">'+i.title+'</h5>';
               temp_card += '<p class="card-text">'+i.description+'</p>';
-              temp_card += '<input type="hidden" id="'+ i.activity_id +'" name="activity_id" value="'+i.activity_id+'">'
-              temp_card += '<button class="mybutton" type="submit" >Join</button>';
+              temp_card += '<input type="hidden" id="'+ i.activity_id +'" name="join_title" value="'+i.activity_id+'">'
+              temp_card += '<button type="submit" >Join</button>';
               temp_card += '</div>';
               temp_card += '</div>';
               temp_card += '</div>';
-              temp_card += '</form>'
-              if(temp_id == 0) card1 = temp_card; 
-              if(temp_id == 1) card2 = temp_card; 
-              if(temp_id == 2) card3 = temp_card; 
-              if(temp_id == 3) card4 = temp_card;
-
-              temp_id += 1;
-              temp_card = ''; 
+              
+        temp_id += 1; 
+         temp_card += '</div>'; 
+         temp_card += '</form>'; 
+         if(temp_id == 0) card1 = temp_card; 
+         if(temp_id == 1) card2 = temp_card; 
+         if(temp_id == 2) card3 = temp_card; 
+         if(temp_id == 3) card4 = temp_card; 
           }); %>
-      
-      <%- card1 %>    
-      <%- card2 %>
-      <%- card3 %>
-      <%- card4 %>
+          
+          <%- card1; %>
+     <%- card2; %>
+     <%- card3; %>
+     <%- card4; %>
      <% } %>
      
-        </div>
-    
+    </div>
    </div>
   </div>
 </div>

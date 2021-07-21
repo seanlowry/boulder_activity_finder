@@ -61,7 +61,7 @@ app.post('/login',function(req, res){
 						 var getUserInfo = `select user_id, firstname, username from users where username = '${input}' or email = '${input}';`;
 						 db.any(getUserInfo)
 							 .then(data2 => {
-								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 6000000})
+								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 60000})
 								 res.redirect('/home')
 							 })
 							 .catch (err => {
@@ -100,8 +100,7 @@ app.get('/home',function(req, res){
 	var currUser = req.cookies["account"];
   if(currUser){
     id = currUser.userid
-    //only select the activities current user joins
-    var pullActivities = "SELECT * FROM activities WHERE " + id +" = ANY(member_ids) ;";
+    var pullActivities = `SELECT * FROM activities;`;
 		var pullPosts= `select * from posts;`;
     db.task('get-everything', task => {
 			return task.batch([
@@ -159,7 +158,7 @@ app.post('/new_post/annou', function(req,res){
             .then(function(data){
                 console.log("announcement successed\n")
                 res.render('pages/post',{
-                    my_title: "post/annou",
+                    title: "post/annou",
                     alert_msg: "",
 
                 })
@@ -167,14 +166,12 @@ app.post('/new_post/annou', function(req,res){
             .catch(error  =>{
                 console.log("announcement failed\n")
                 res.render('pages/post',{
-                    my_title: "post/annou",
+                    title: "post/annou",
                     alert_msg: error,
                     error: error
                 })
             })
 
-    }else{
-        res.redirect("/")
     }
 })
 
@@ -199,7 +196,7 @@ app.post('/new_post/activity', function(req,res){
             .then(function(data){
                 console.log("aactivity successed\n")
                 res.render('pages/post',{
-                    my_title: "post/acitity",
+                    title: "post/acitity",
                     alert_msg: "",
 
                 })
@@ -207,7 +204,7 @@ app.post('/new_post/activity', function(req,res){
             .catch(error  =>{
                 console.log("activity failed\n")
                 res.render('pages/post',{
-                    my_title: "post/activity",
+                    title: "post/activity",
                     alert_msg: error,
                     error: error
                 })
@@ -216,6 +213,78 @@ app.post('/new_post/activity', function(req,res){
     }
 
 })
+
+app.get('/public_post',function(req, res){
+    //var author_id =  req.body
+    if(req.cookies["account"] !=null){
+
+        var query1 = "SELECT * FROM posts ORDER BY post_id desc limit 4;"
+        var query2 = "SELECT * FROM activities ORDER BY activity_id desc limit 4;"
+        db.task('get-everything', task=>{
+            return task.batch([
+                task.any(query1),
+                task.any(query2)
+            ]);
+        })
+            .then(function(data){
+                console.log(data);
+                res.render('pages/browse',{
+                    my_title: 'Home',
+                    alert_msg: '',
+                    allpost: data[0],
+                    allactivity: data[1]
+                })
+            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/browse',{
+                    my_title: 'Home',
+                                    alert_msg: '',
+                    allpost: ''
+                })
+
+            })
+    }else{
+        res.redirect('/')
+    }
+});
+
+
+app.post('/public_post/join_0',function(req, res){
+    if(req.cookies["account"] !=null){
+        var account = req.cookies["account"]
+        email = account.account
+        pwd = account.pwd
+        id = account.userid
+        var comment = req.body
+        console.log("joinactivity", req.body)
+        /*
+        console.log(req.body)
+        var query1 = "INSERT INTO comments(post_id, author_id,commentee_ids, body)VALUES("+parseInt(temp_arr[0])+","+parseInt(temp_arr[1])+"," + id+",'"+comment+"');"
+        console.log(query1)
+        var query2 = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+        db.any(query1)
+            .then(function(data){
+                //console.log(data);
+                res.redirect('/public_post')
+            })
+            .catch(error =>{
+                console.log("fail")
+                console.log("Error", error)
+                res.render('pages/browse',{
+                    my_title: 'home',
+                    alert_msg: 'comment failed',
+                    allpost: ''
+                })
+
+            })
+            */
+        res.redirect('/public_post')
+    }
+
+});
+
 
 
 app.post('/public_post',function(req, res){
@@ -249,184 +318,6 @@ app.post('/public_post',function(req, res){
     }
 
 });
-
-
-app.get('/public_post',function(req, res){
-    //var author_id =  req.body
-    if(req.cookies["account"] !=null){
-
-        var query1 = "SELECT * FROM posts ORDER BY post_id desc limit 4;"
-        var query2 = "SELECT * FROM activities ORDER BY activity_id desc limit 4;"
-        db.task('get-everything', task=>{
-            return task.batch([
-                task.any(query1),
-                task.any(query2)
-            ]);
-        })
-            .then(function(data){
-                
-                res.render('pages/browse',{
-                    my_title: 'Home',
-                    alert_msg: '',
-                    allpost: data[0],
-                    allactivity: data[1]
-                })
-            })
-            .catch(error =>{
-                console.log("fail")
-                console.log("Error", error)
-                res.render('pages/browse',{
-                    my_title: 'Home',
-                                    alert_msg: '',
-                    allpost: ''
-                })
-
-            })
-    }else{
-        res.redirect('/')
-    }
-});
-//
-
-
-//four differnt action for maximum four join actiivities button
-
-app.post('/public_post/join_0',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        var join_id = req.body.activity_id
-        console.log("activity_id", req.body)
-        
-        console.log(req.body)
-        var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
-        console.log(query1)
-        
-        db.any(query1)
-            .then(function(data){
-                //console.log(data);
-                res.redirect('/public_post')
-            })
-            .catch(error =>{
-                
-                console.log("Error", error)
-                res.render('pages/browse',{
-                    my_title: '\public_post',
-                    alert_msg: 'join failed',
-                    
-                })
-
-            })
-            
-        res.redirect('/public_post')
-    }
-
-});
-
-app.post('/public_post/join_1',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        var join_id = req.body.activity_id
-        console.log("activity_id", req.body)
-        
-        console.log(req.body)
-        var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
-        console.log(query1)
-        
-        db.any(query1)
-            .then(function(data){
-                //console.log(data);
-                res.redirect('/public_post')
-            })
-            .catch(error =>{
-                
-                console.log("Error", error)
-                res.render('pages/browse',{
-                    my_title: '\public_post',
-                    alert_msg: 'join failed',
-                    
-                })
-
-            })
-            
-        res.redirect('/public_post')
-    }
-
-});
-
-app.post('/public_post/join_2',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        var join_id = req.body.activity_id
-        console.log("activity_id", req.body)
-        
-        console.log(req.body)
-        var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
-        console.log(query1)
-        
-        db.any(query1)
-            .then(function(data){
-                //console.log(data);
-                res.redirect('/public_post')
-            })
-            .catch(error =>{
-                
-                console.log("Error", error)
-                res.render('pages/browse',{
-                    my_title: '\public_post',
-                    alert_msg: 'join failed',
-                    
-                })
-
-            })
-            
-        res.redirect('/public_post')
-    }
-
-});
-
-app.post('/public_post/join_3',function(req, res){
-    if(req.cookies["account"] !=null){
-        var account = req.cookies["account"]
-        email = account.account
-        pwd = account.pwd
-        id = account.userid
-        var join_id = req.body.activity_id
-        console.log("activity_id", req.body)
-        
-        console.log(req.body)
-        var query1 = "UPDATE activities SET member_ids = array_append(member_ids, "+id+") WHERE activity_id = " + join_id +"; "
-        console.log(query1)
-        
-        db.any(query1)
-            .then(function(data){
-                //console.log(data);
-                res.redirect('/public_post')
-            })
-            .catch(error =>{
-                
-                console.log("Error", error)
-                res.render('pages/browse',{
-                    my_title: '\public_post',
-                    alert_msg: 'join failed',
-                    
-                })
-
-            })
-            
-        res.redirect('/public_post')
-    }
-
-});
-
 
 function hashfunc(useremail, pwd){
     var hash = crypto.createHash('md5')
@@ -494,7 +385,7 @@ app.post('/registration/new_user', (req, res) => {
 					]);
 				})
 					.then(data1 => {
-						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 6000000})
+						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 60000})
 						res.redirect('/home')
 					})
 					.catch(err => {
@@ -515,9 +406,26 @@ app.post('/registration/new_user', (req, res) => {
 		})
 });
 
-app.get('/logout', (req,res) => {
-	var user = req.cookies["account"];
-	console.log(user)
+app.get('/public_post',function(req, res){
+    //var author_id =  req.body
+
+    var query = "SELECT * FROM posts ORDER BY post_id desc limit 5;"
+    db.any(query)
+        .then(function(data){
+            //console.log(data);
+            res.render('pages/post',{
+                my_title: 'Home',
+								alert_msg: '',
+                allpost: data
+            })
+        })
+        .catch(error =>{
+            console.log("Error", error)
+						res.render('pages/error', {
+							my_title: 'Error',
+							alert_msg: "We're sorry; something has gone terribly wrong on our end."
+						})
+        })
 });
 
 //app.listen(3000);

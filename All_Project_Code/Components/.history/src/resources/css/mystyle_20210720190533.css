@@ -1,6 +1,5 @@
 body {
   background-color: #8fadbf;
-  color: #183140;
   font-family: Verdana, sans-serif;
 }
 .round-a {
@@ -128,17 +127,16 @@ button.btn-search {
 }
 
 .mybutton, .btnmodal{
-  background-color: #beb2c8;
-  border: none;
+  background-color: #0d47a1;
+  border-color: #0d47a1;
   border-radius: 4px;
   box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.7);
 }
 
 .mybutton_2{
-  background-color: #beb2c8;
-  border-color: #beb2c8;
+  background-color: #0d47a1;
+  border-color: #0d47a1;
   border-radius: 4px;
-  border: none;
   box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.7);
   font-size: 40px;
 }
@@ -146,7 +144,6 @@ button.btn-search {
 .card{
   box-shadow: 9px 9px 11px 4px rgba(0,0,0,0.7);
   border-radius: 10px;
-  background-color: #d7d6d6;
 }
 
 .content{
