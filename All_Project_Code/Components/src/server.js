@@ -541,7 +541,7 @@ app.post('/registration/new_user', (req, res) => {
 });
 
 app.get('/user_settings', (req, res) => {
-	res.render('pages/user_settings', {
+	res.render('pages/nf1.ejs', {
 		my_title: 'User Settings'
 	})
 })
