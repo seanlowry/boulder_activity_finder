@@ -1,6 +1,6 @@
 <%- include('../partials/header_signin') %>
 
-  <div class="container center text-center">
+  <div class="container center text-center my-4">
     <form class="form-signin" action="registration/new_user" method="post" onsubmit="return validateForm()">
       <img src="../../resources/img/navbar-logo.jpg" alt="site logo" width="150px">
       <br>
@@ -36,13 +36,13 @@
       <div class="form-row">
         <div class="form-group col-sm-12">
           <label for="password">Password <small class="text-muted">(6-20 characters)</small></label>
-          <input type="password" minlength="6" maxlength="20" class="form-control round-a" name="password" id="password" placeholder="password" oninput="checkPasswordMatch('password', 'passwordConfirm')" required>
+          <input type="password" minlength="6" maxlength="20" class="form-control round-a" name="password" id="password" placeholder="password" oninput="checkPasswordMatch('password', 'passwordConfirm');" required>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group col-sm-12">
           <label for="passwordConfirm">Confirm Password</label>
-          <input type="password" class="form-control round-a" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password" oninput="checkPasswordMatch()" required>
+          <input type="password" class="form-control round-a" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password" oninput="checkPasswordMatch('password', 'passwordConfirm');" required>
         </div>
       </div>
       <a class="btn btn-light" href="/">Cancel</a>

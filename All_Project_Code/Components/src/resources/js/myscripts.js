@@ -75,7 +75,7 @@ function checkUsernameAvail() {
 function checkPasswordMatch(id1, id2) {
   var pass1 = document.getElementById(id1);
   var pass2 = document.getElementById(id2);
-  if (pass1.value === pass2.value) {
+  if (pass1.value == pass2.value) {
     pass2.style.borderColor = "green";
     pass2.style.borderWidth = "medium";
     return true;

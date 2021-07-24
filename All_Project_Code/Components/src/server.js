@@ -551,7 +551,7 @@ app.post('/registration/new_user', (req, res) => {
 					]);
 				})
 					.then(data1 => {
-						res.cookie("account", {userId: data1[1].user_id, userName: username, firstName: firstname, lastName: lastname, email: data1[0].email}, {maxAge: 3600000})
+						res.cookie("account", {userId: data1[1].user_id, userName: username, firstName: firstname, lastName: lastname, email: email}, {maxAge: 3600000})
 						res.redirect('/home')
 					})
 					.catch(err => {
