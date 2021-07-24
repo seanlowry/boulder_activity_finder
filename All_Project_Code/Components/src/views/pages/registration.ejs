@@ -36,7 +36,7 @@
       <div class="form-row">
         <div class="form-group col-sm-12">
           <label for="password">Password <small class="text-muted">(6-20 characters)</small></label>
-          <input type="password" minlength="6" maxlength="20" class="form-control round-a" name="password" id="password" placeholder="password" oninput="checkPasswordMatch()" required>
+          <input type="password" minlength="6" maxlength="20" class="form-control round-a" name="password" id="password" placeholder="password" oninput="checkPasswordMatch('password', 'passwordConfirm')" required>
         </div>
       </div>
       <div class="form-row">
@@ -45,8 +45,8 @@
           <input type="password" class="form-control round-a" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password" oninput="checkPasswordMatch()" required>
         </div>
       </div>
-      <a class="btn btn btn-danger" href="/">Cancel</a>
-      <input type="submit" value="Submit" class="btn btn btn-primary">
+      <a class="btn btn-light" href="/">Cancel</a>
+      <input type="submit" value="Submit" class="btn btn-primary">
     </form>
     <br>
   </div>

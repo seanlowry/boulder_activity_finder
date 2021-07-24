@@ -4,9 +4,10 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto')
 var cookieParser = require('cookie-parser');
 const { join } = require("path");
-app.use(cookieParser());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 var pgp = require('pg-promise')();
 
@@ -58,10 +59,10 @@ app.post('/login',function(req, res){
 				db.any(grabPassword)
 				 .then(data1 => {
 					 if(data1[0].user_password == pass) {
-						 var getUserInfo = `select user_id, firstname, username from users where username = '${input}' or email = '${input}';`;
+						 var getUserInfo = `select * from users where username = '${input}' or email = '${input}';`;
 						 db.any(getUserInfo)
 							 .then(data2 => {
-								 res.cookie("account", {userid: data2[0].user_id, firstname: data2[0].firstname, username: data2[0].username}, {maxAge: 6000000})
+								 res.cookie("account", {userId: data2[0].user_id, userName: data2[0].username, firstName: data2[0].firstname, lastName: data2[0].lastname, email: data2[0].email}, {maxAge: 3600000})
 								 res.redirect('/home')
 							 })
 							 .catch (err => {
@@ -99,10 +100,9 @@ app.post('/login',function(req, res){
 app.get('/home',function(req, res){
 	var currUser = req.cookies["account"];
   if(currUser){
-    id = currUser.userid
-    //only select the activities current user joins
+    id = currUser.userId;
     var pullActivities = `SELECT * FROM activities WHERE ${id} = ANY(member_ids) or ${id} = manager_id;`;
-		var pullPosts= `select * from posts;`;
+		var pullPosts= `select * from posts WHERE ${id} = author_id;`;
     db.task('get-everything', task => {
 			return task.batch([
 				task.any(pullActivities),
@@ -110,15 +110,11 @@ app.get('/home',function(req, res){
 			]);
 		})
 	    .then(function(data){
-				console.log("Activities\n"+data)
-				console.log("Posts\n"+data[1])
 	      res.render('pages/home',{
 	          my_title: 'Home',
 						currUser: currUser,
 						activities: data[0],
 						posts: data[1],
-						alert_msg: '',
-	          joinpost: data
 	      })
 	    })
 			.catch (err => {
@@ -132,7 +128,6 @@ app.get('/home',function(req, res){
 	else {
     res.render('pages/login',{
       my_title: 'Login',
-			alert_msg: '',
     })
   }
 });
@@ -140,7 +135,6 @@ app.get('/home',function(req, res){
 
 app.get('/search', (req, res) => {
 	var input = req.query.user_search;
-	console.log(input)
 	var query1 = `select * from activities where title ilike '%${input}%' or summary ilike '%${input}%' or body ilike '%${input}%';`
 	var query2 = `select * from posts where title ilike '%${input}%' or summary ilike '%${input}%' or body ilike '%${input}%';`
 	db.task('get-everything', task => {
@@ -162,35 +156,49 @@ app.get('/search', (req, res) => {
 })
 
 app.get('/new_activity', (req,res) => {
-	var userId = req.cookies["account"].userid;
-	var title = req.query.act_title;
-	var summary = req.query.act_summary;
-	var date = req.query.act_date;
-	var time = req.query.act_time;
-	var body = req.query.act_body;
-	var insert = `insert into activities(manager_id, member_ids, title, summary, body, activity_time, update_time) values ('${userId}','{${userId}}','${title}','${summary}','${body}','${date} ${time}', CURRENT_TIMESTAMP);`;
-	db.any(insert)
-	.then(data => {
-		res.redirect('/home')
-	})
-	.catch(err => {
-		console.log("ERROR: "+err);
-	})
+	var currUser = req.cookies["account"];
+	if (currUser) {
+		var title = req.query.actTitle;
+		var summary = req.query.actSummary;
+		var date = req.query.actDate;
+		var time = req.query.actTime;
+		var body = req.query.actBody;
+		var region = req.query.actRegion;
+		var updateDate = req.query.actUpdateDate;
+		var updateTime = req.query.actUpdateDate;
+		var insert = `insert into activities(manager_id, member_ids, title, summary, body, activity_date, activity_time, user_region, update_date, update_time) values ('${currUser.userId}','{${currUser.userId}}','${title}','${summary}','${body}','${date}', '${time}', '${region}', '${updateDate}', '${updateTime}');`;
+		db.any(insert)
+		.then(data => {
+			res.redirect('/home')
+		})
+		.catch(err => {
+			console.log("ERROR: "+err);
+		})
+	}
+	else {
+		res.redirect('/');
+	}
 })
 
 app.get('/new_post', (req,res) => {
-	var userId = req.cookies["account"].userid;
-	var title = req.query.act_title;
-	var summary = req.query.act_summary;
-	var body = req.query.act_body;
-	var insert = `insert into posts(author_id, title, summary, body, update_time) values ('${userId}','${title}','${summary}','${body}', CURRENT_TIMESTAMP);`;
-	db.any(insert)
-	.then(data => {
-		res.redirect('/home')
-	})
-	.catch(err => {
-		console.log("ERROR: "+err);
-	})
+	var currUser = req.cookies["account"];
+	if (currUser) {
+		var title = req.query.post_title;
+		var summary = req.query.post_summary;
+		var body = req.query.post_body;
+		var updateTime = req.query.post_update;
+		var insert = `insert into posts(author_id, title, summary, body, update_time) values ('${currUser.userId}','${title}','${summary}','${body}', '${updateTime}');`;
+		db.any(insert)
+		.then(data => {
+			res.redirect('/home')
+		})
+		.catch(err => {
+			console.log("ERROR: "+err);
+		})
+	}
+	else {
+		res.redirect('/');
+	}
 })
 
 app.post('/new_post/annou', function(req,res){
@@ -198,7 +206,7 @@ app.post('/new_post/annou', function(req,res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         console.log("annou", req.body)
         var title = "'" + req.body.new_title + "'"
         var summary = "'" + req.body.new_summary + "'"
@@ -232,7 +240,7 @@ app.post('/new_post/activity', function(req,res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         console.log("annou", req.body)
         var title = "'" + req.body.new_title + "'"
         var summary = "'" + req.body.new_summary + "'"
@@ -272,7 +280,7 @@ app.post('/public_post',function(req, res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         var comment = req.body.comment
         var ids = req.body.Id
         var temp_arr = ids.split('&') //[posy_id & author_id]
@@ -345,7 +353,7 @@ app.post('/public_post/join_0',function(req, res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
 
@@ -379,7 +387,7 @@ app.post('/public_post/join_1',function(req, res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
 
@@ -413,7 +421,7 @@ app.post('/public_post/join_2',function(req, res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
 
@@ -447,7 +455,7 @@ app.post('/public_post/join_3',function(req, res){
         var account = req.cookies["account"]
         email = account.account
         pwd = account.pwd
-        id = account.userid
+        id = account.userId
         var join_id = req.body.activity_id
         console.log("activity_id", req.body)
 
@@ -543,7 +551,7 @@ app.post('/registration/new_user', (req, res) => {
 					]);
 				})
 					.then(data1 => {
-						res.cookie("account", {userid: data1[1].user_id, username: username, email: email, pwd: password}, {maxAge: 6000000})
+						res.cookie("account", {userId: data1[1].user_id, userName: username, firstName: firstname, lastName: lastname, email: data1[0].email}, {maxAge: 3600000})
 						res.redirect('/home')
 					})
 					.catch(err => {
@@ -565,15 +573,114 @@ app.post('/registration/new_user', (req, res) => {
 });
 
 app.get('/user_settings', (req, res) => {
-	res.render('pages/nf1.ejs', {
-		my_title: 'User Settings'
-	})
+	var userInfo = req.cookies["account"];
+	if (userInfo) {
+		res.render('pages/user_settings', {
+			my_title: 'Settings',
+			userInfo: userInfo,
+			alert_msg: ''
+		})
+	}
+	else {
+		res.redirect('/', {
+			my_title: "Login",
+			alert_msg: "Your session appears to have timed out"
+		})
+	}
 })
 
-app.get('/logout', (req,res) => {
-	var user = req.cookies["account"];
-	console.log(user);
-	res.cookie('account', null);
+app.post('/user_settings/update_user', (req, res) => {
+	var userInfo = req.cookies["account"];
+	if (userInfo) {
+		var userId = userInfo.userId;
+		var requestedEmail = req.body.email;
+		var requestedUserName = req.body.userName;
+		var checkIfEmailAvail = `select count(*) from users where user_id != '${userId}' and email = '${requestedEmail}';`;
+		db.any(checkIfEmailAvail)
+			.then (data => {
+				if (data[0].count > 0) {
+					res.render('/user_settings', {
+						my_title: 'Settings',
+						userInfo: userInfo,
+						alert_msg: 'Your requested email is already in use by another user'
+					})
+				}
+				else {
+					var checkIfUserNameAvail = `select count(*) from users where user_id != '${userId}' and username = '${requestedUserName}';`;
+					db.any(checkIfUserNameAvail)
+						.then (data1 => {
+							if (data1[0].count > 0) {
+								res.render('pages/user_settings', {
+									my_title: 'Settings',
+									userInfo: userInfo,
+									alert_msg: 'Your requested username is already in use by another user'
+								})
+							}
+							else {
+								var requestedFirstName = req.body.firstName;
+								var requestedLastName = req.body.lastName;
+								var insert = `update users set email='${requestedEmail}', username='${requestedUserName}', firstname='${requestedFirstName}', lastname='${requestedLastName}' where user_id=${userInfo.userId};`;
+								db.any(insert)
+									.then(() => {
+										res.cookie("account", {userId: userId, firstName: requestedFirstName, lastName: requestedLastName, userName: requestedUserName, email: requestedEmail}, {maxAge: 3600000});
+										res.redirect('/user_settings')
+									})
+									.catch(err => {
+										console.log("ERROR:", err)
+										res.redirect('/user_settings')
+									})
+							}
+						})
+				}
+			})
+			.catch(err => {
+				console.log("ERROR:", err);
+				res.redirect('/user_settings')
+			})
+	}
+	else {
+		res.redirect('/');
+	}
+})
+
+app.post('/user_settings/update_password', (req, res) => {
+	var currUser = req.cookies["account"];
+	if (currUser) {
+		var oldPassword = req.body.oldPassword;
+		var checkPassword = `select count(*) from users where user_id = '${currUser.userId}' and user_password = '${oldPassword}';`;
+		db.one(checkPassword)
+		.then (data => {
+			if (data.count == 1) {
+				var newPassword = req.body.newPassword;
+				var updatePassword = `update users set user_password = '${newPassword}' where user_id = ${currUser.userId};`;
+				db.any(updatePassword)
+				.then(data2 => {
+					res.redirect('/user_settings')
+				})
+				.catch(err => {
+					console.log("ERROR:", err);
+					res.redirect('/user_settings')
+				})
+			}
+			else {
+				res.render('pages/user_settings', {
+					my_title: 'Settings',
+					alert_msg: 'The entered password does not match the one we have on file for your account'
+				})
+			}
+		})
+		.catch(err => {
+			console.log("ERROR:", err);
+			res.redirect('/user_settings')
+		})
+	}
+	else {
+		res.redirect('/');
+	}
+})
+
+app.get('/logout', (req, res) => {
+	res.cookie("account", {}, {maxAge: -1})
 	res.redirect('/');
 });
 

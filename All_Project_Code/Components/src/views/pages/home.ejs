@@ -1,8 +1,10 @@
 <%- include('../partials/header'); %>
 <%- include('../partials/navbar'); %>
 
+<script type="text/javascript">document.getElementById('Home').classList.add('active')</script>
+
 <div class="row justify-content-center my-4">
-  <div class="col-sm-5">
+  <div class="col-10 col-sm-5">
     <div class="container round-a py-2">
       <div class="row justify-content-between">
         <h3 class="cont-header">Activities</h3>
@@ -20,71 +22,79 @@
                 <div class="modal-body">
                     <div class="form-row">
                       <label for="act-title">Title</label>
-                      <input class="form-control" type="text" name="act_title" value="" required>
+                      <input class="form-control" type="text" name="actTitle" maxlength="30" value="" required>
                     </div>
                     <div class="form-row">
                       <label for="act-summary">Brief Description</label>
-                      <input class="form-control" type="text" name="act_summary" value="" required>
+                      <input class="form-control" type="text" name="actSummary" maxlength="255" value="" required>
                     </div>
                     <div class="form-row">
                       <label for="act-date">Date</label>
-                      <input class="form-control" type="date" name="act_date" value="" required>
+                      <input class="form-control" type="date" name="actDate" value="" required>
                     </div>
                     <div class="form-row">
                       <label for="act-time">Time</label>
-                      <input class="form-control" type="time" name="act_time" value="" required>
+                      <input class="form-control" type="time" name="actTime" value="" required>
                     </div>
                     <div class="form-row">
                       <label for="act-body">Additional Details</label>
-                      <input class="form-control" type="text" name="act_body" value="" required>
+                      <textarea class="form-control" type="text" name="actBody" value="" required></textarea>
                     </div>
+                    <!-- Hidden variables that are set on submit -->
+                    <div class="form-row d-none">
+                      <input class="form-control" id="actRegion" type="text" name="actRegion" value="">
+                      <input class="form-control" id="actUpdateDate" type="text" name="actUpdateDate" value="">
+                      <input class="form-control" id="actUpdateTime" type="text" name="actUpdateTime" value="">
+                    </div>
+                    <script type="text/javascript">
+                      document.getElementById('actUpdateDate').value =
+                    </script>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <input type="submit" value="Post" class="btn btn-primary"></input>
+                  <input type="submit" value="Post" onclick="setDefaults('act');" class="btn btn-primary"></input>
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
+
       <%
-        function format_timestamp(date) {
-          var date_arr = date.toString().split(" ")
-          var ret = {};
-          ret["full"] = date_arr;
-          ret["weekday"] = date_arr[0];
-          ret["month"] = date_arr[1];
-          ret["day"] = date_arr[2];
-          ret["year"] = date_arr[3];
-          ret["date"] = `${date_arr[1]} ${date_arr[2]}, ${date_arr[3]}`;
-          var time = date_arr[4].split(":");
-          var hour = time[0]
-          let ampm = (Number(hour) < 12) ? "a.m." :  "p.m.";
-          hour = Number(hour)%12;
-          time = `${hour.toString()}:${time[1]} ${ampm}`;
-          ret["time"] = time;
-          return ret;
+        function formatTime(time) {
+          time = time.toString().split(':');
+          var hour = Number(time[0]);
+          // tod = time of day
+          let tod = (hour < 12) ? 'a.m.' : 'p.m.';
+          hour = hour % 12;
+          return `${hour}:${time[1]} ${tod}`;
+        }
+        function formatDate(date) {
+          date = date.toString().substring(4,15);
+          return date;
         }
 
         card = '';
         if(activities){
           activities.forEach(function(i){
-            console.log(i)
             card += '<div class="card round-a my-3" style="width: 100%;">';
-              card += '<img class="round-a" src="../../resources/img/hiking.jpg" class="card-img-top" alt="..." style="height: 300;width: 330;">';
-              card += '<div class="card-body">';
+              // Image used has been stock; need to implement method to save user uploaded images
+              // card += '<img class="round-a" src="../../resources/img/hiking.jpg" class="card-img-top" alt="..." style="height: 300;width: 330;">';
                 var download_data = '';
-                card += '<h4 class="card-title">'+i.title+'</h4>';
+                card += '<div class="card-header">';
+                card += `<h4 class="card-title">${i.title}</h4>`;
                 download_data += i.title;
                 card += '<p class="card-subtitle text-muted">'+i.summary+'</p>';
                 download_data += `&${i.summary}`;
-                card += `<button class="btn btn-outline-secondary my-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-a-${i.activity_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
-                card += `<div class="collapse" id="col-a-${i.activity_id}">`;
-                  var activityArray = format_timestamp(i.activity_time);
-                  card += `<p class="card-text"><small class="text-muted">Date </small>${activityArray["date"]}</p>`;
-                  card += `<p class="card-text"><small class="text-muted">Time </small>${activityArray["time"]}</p>`;
-                  download_data += `&${i.activity_time}`;
+                card += `<button class="btn btn-outline-secondary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-a-${i.activity_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
+                card += '</div>';
+                card += `<div class="card-body collapse" id="col-a-${i.activity_id}">`;
+                  var activityDate = formatDate(i.activity_date);
+                  var activityTime = formatTime(i.activity_time);
+                  card += `<p class="card-text"><small class="text-muted">Date </small>${activityDate}</p>`;
+                  card += `<p class="card-text"><small class="text-muted">Time </small>${activityTime}</p>`;
+                  card += `<p class="card-text"><small class="text-muted">Region </small>${i.user_region}</p>`;
+                  download_data += `&${activityDate}&${i.activity_time}`;
                   if (i.body) {
                     card += '<p class="card-text">'+i.body+'</p>';
                     download_data += `&${i.body}`;
@@ -92,22 +102,19 @@
                   else {
                     download_data += `$`;
                   }
-                  card += `<a href="#" class="btn btn-primary" onclick="start_download(${i.activity_id})" id="${i.activity_id}" data-content="${download_data}">Add to Calendar</a>`;
-                  var updateArray = format_timestamp(i.update_time);
-                  card += `<div class="card-footer mt-2"><small class="text-muted">Last Update: ${updateArray["date"]} @ ${updateArray["time"]}</small></div>`;
-                card += `</div>`;
-              card += `</div>`;
+                  card += `<a href="#" class="btn btn-primary" onclick="start_download('dl-${i.activity_id}')" id="dl-${i.activity_id}" data-content="${download_data}">Add to Calendar</a>`;
+                  var updateTime = formatTime(i.update_time);
+                  var updateDate = formatDate(i.update_date);
+                  card += `</div>`;
+                card += `<div class="card-footer mb-1"><small class="text-muted">Last Update: ${updateDate} @ ${updateTime}</small></div>`;
             card += `</div>`;
           });
-        }
-        else {
-          card += `<p>No activities available to show</p>`
         }
       %>
       <%- card %>
     </div>
   </div>
-  <div class="col-sm-5">
+  <div class="col-10 col-sm-5">
     <div class="container round-a py-2">
       <div class="row justify-content-between">
         <h3 class="cont-header">Posts</h3>
@@ -116,7 +123,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="post_modal_title">Create a New Activity</h5>
+                <h5 class="modal-title" id="post_modal_title">Create a New Post</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -124,21 +131,24 @@
               <form action="/new_post" method="get">
                 <div class="modal-body">
                     <div class="form-row">
-                      <label for="act-title">Title</label>
-                      <input class="form-control" type="text" name="act_title" value="" required>
+                      <label for="post-title">Title</label>
+                      <input class="form-control" type="text" name="post_title" maxlength="30" value="" required>
                     </div>
                     <div class="form-row">
                       <label for="act-summary">Brief Description</label>
-                      <input class="form-control" type="text" name="act_summary" value="" required>
+                      <input class="form-control" type="text" name="post_summary" maxlength="256" value="" required>
                     </div>
                     <div class="form-row">
                       <label for="act-body">Additional Details</label>
-                      <input class="form-control" type="text" name="act_body" value="" required>
+                      <input class="form-control" type="text" name="post_body" value="">
+                    </div>
+                    <div class="form-row d-none">
+                      <input class="form-control" id="post_update" type="text" name="post_update" value="">
                     </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <input type="submit" value="Post" class="btn btn-primary"></input>
+                  <input type="submit" value="Post" onclick="setUpdateTime('post_update');" class="btn btn-primary"></input>
                 </div>
               </form>
             </div>
@@ -149,36 +159,27 @@
           card = '';
           if(posts){
             posts.forEach(function(i){
-              console.log(i)
               card += '<div class="card round-a my-3" style="width: 100%;">';
-                card += '<div class="card-body">';
-                  var download_data = '';
+                card += '<div class="card-header">';
                   card += '<h5 class="card-title">'+i.title+'</h5>';
-                  download_data += i.title;
                   card += '<p class="card-subtitle text-muted">'+i.summary+'</p>';
-                  download_data += i.summary;
-                  card += `<button class="btn btn-outline-secondary my-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-p-${i.post_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
-                  card += `<div class="collapse" id="col-p-${i.post_id}">`;
-                    if (i.body) {
-                      card += '<p class="card-text">'+i.body+'</p>';
-                      download_data += `&${i.body}`;
-                    }
-                    var updateArray = format_timestamp(i.update_time);
-                    card += `<div class="card-footer mt-2 pb-0"><small class="text-muted">Last Update: ${updateArray["date"]} @ ${updateArray["time"]}</small></div>`;
-                  card += `</div>`;
-                card += `</div>`;
+                  card += `<button class="btn btn-outline-secondary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#col-p-${i.post_id}" aria-expanded="false" aria-controls="col-${i.activity_id}">Details</button>`;
+                card += '</div>';
+                card += `<div class="collapse card-body" id="col-p-${i.post_id}">`;
+                  if (i.body) {
+                    card += '<p class="card-text">'+i.body+'</p>';
+                  }
+                card += '</div>'
+                var updateTime = formatTime(i.update_time);
+                var updateDate = formatDate(i.update_date);
+                card += `<div class="card-footer mb-1"><small class="text-muted">Last Update: ${updateDate} @ ${updateTime}</small></div>`;
               card += `</div>`;
             });
-          }
-          else {
-            card += `<p>No posts available to show</p>`
           }
         %>
         <%- card %>
     </div>
   </div>
 </div>
-
-
 
 <%- include('../partials/footer'); %>

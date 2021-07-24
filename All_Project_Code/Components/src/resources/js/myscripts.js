@@ -43,30 +43,12 @@ $(function(){
   })
 })
 
-function format_timestamp(timestamp) {
-  var date_arr = timestamp.toString().split(" ")
-  var ret = {};
-  ret["full"] = date_arr;
-  ret["weekday"] = date_arr[0];
-  ret["month"] = date_arr[1];
-  ret["day"] = date_arr[2];
-  ret["year"] = date_arr[3];
-  ret["date"] = `${date_arr[1]} ${date_arr[2]}, ${date_arr[3]}`;
-  var time = date_arr[4].split(":");
-  var hour = time[0]
-  let ampm = (Number(hour) < 12) ? "a.m." :  "p.m.";
-  hour = Number(hour)%12;
-  time = `${hour.toString()}:${time[1]} ${ampm}`;
-  ret["time"] = time;
-  return ret;
-}
-
 function validateForm() {
   if (!checkUsernameAvail()) {
     alert("The username that you selected is already in use");
     return false;
   }
-  if (!checkPasswordMatch()) {
+  if (!checkPasswordMatch('password', 'passwordConfirm')) {
     alert("The passwords that you entered do not match");
     return false;
   }
@@ -80,7 +62,7 @@ function checkUsernameAvail() {
   if (userArray.includes(userInput.value)) {
     userInput.style.borderColor = "red";
     userInput.style.borderWidth = "medium";
-    userInput.setCustomValidity = "Username already in use; please choose another :)";
+    userInput.setCustomValidity = "Username already in use; please choose another";
     return false;
   }
   else {
@@ -90,9 +72,9 @@ function checkUsernameAvail() {
   }
 }
 
-function checkPasswordMatch() {
-  var pass1 = document.getElementById("password");
-  var pass2 = document.getElementById("passwordConfirm");
+function checkPasswordMatch(id1, id2) {
+  var pass1 = document.getElementById(id1);
+  var pass2 = document.getElementById(id2);
   if (pass1.value === pass2.value) {
     pass2.style.borderColor = "green";
     pass2.style.borderWidth = "medium";
@@ -106,6 +88,16 @@ function checkPasswordMatch() {
   }
 }
 
+function setDefaults(id) {
+  var region = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var dateObj = new Date();
+  var date = dateObj.toDateString().substring(4,15);
+  var time = dateObj.toTimeString().split(' ')[0];
+  var offset = dateObj.getTimezoneOffset() / 60;
+  document.getElementById(id+'Region').value = region;
+  document.getElementById(id+'UpdateDate').value = date;
+  document.getElementById(id+'UpdateTime').value = `${time} -${offset}`;
+}
 
 function start_download(param){
   console.log("function called")
@@ -165,9 +157,9 @@ function createICSfile(id){
     console.log(ele.getAttribute('data-content'))
     var params = ele.getAttribute('data-content').split("&")
     var temp_date = params[2].split(' ')
-    console.log("date:"+temp_date)
-    var temp_time = temp_date[4].split(':')
-    console.log("time:"+temp_time)
+    console.log(temp_date)
+    var temp_time = params[3].split(':')
+    console.log(temp_time)
     var event_str = "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
     "METHOD:PUBLISH\n" +
@@ -185,27 +177,27 @@ function createICSfile(id){
     "END:STANDARD\n" +
     "END:VTIMEZONE\n"+
     "BEGIN:VEVENT\n" +
-     "UID:" +
-         Math.random().toString(36).substring(2) +
-     "\n" +
-     "DTSTART;" + "TZID=America/Denver:" +
-     temp_date[2] + retMonth(temp_date[0]) + temp_date[1] + "T" + temp_time[0] + temp_time[1] + temp_time[2] +
-     "\n" +
-     "DTEND;" + "TZID=America/Denver:" +
-     temp_date[2] + retMonth(temp_date[0]) + temp_date[1] + "T" + "235959" +
-     "\n" +
-     "TZID:America/Denver\n" +
-     "SUMMARY:" +
-      params[0] +
-     "\n" +
-     "DESCRIPTION:" + params[1] +
-     "\n" +
-     "BEGIN:VALARM\n" +
-     "TRIGGER:-PT10M\n" +
-     "ACTION:DISPLAY\n" +
+    "UID:" +
+       Math.random().toString(36).substring(2) +
+    "\n" +
+    "DTSTART;" + "TZID=America/Denver:" +
+    temp_date[2] + retMonth(temp_date[0]) + temp_date[1] + "T" + temp_time[0] + temp_time[1] + temp_time[2] +
+    "\n" +
+    "DTEND;" + "TZID=America/Denver:" +
+    temp_date[2] + retMonth(temp_date[0]) + temp_date[1] + "T" + "235959" +
+    "\n" +
+    "TZID:America/Denver\n" +
+    "SUMMARY:" +
+    params[0] +
+    "\n" +
+    "DESCRIPTION:" + params[1] +
+    "\n" +
+    "BEGIN:VALARM\n" +
+    "TRIGGER:-PT10M\n" +
+    "ACTION:DISPLAY\n" +
     "DESCRIPTION:Reminder\n" +
     "END:VALARM\n" +
-     "END:VEVENT\n" +
+    "END:VEVENT\n" +
     "END:VCALENDAR";
     console.log(event_str)
 
