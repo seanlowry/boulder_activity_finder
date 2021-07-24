@@ -1,4 +1,4 @@
-# 3308Summer21_300_5
+# Boulder Activity Finder
 
 Users will first be directed to a login screen where they will have the option to create an account or login.  The user info entered on the registration page will be stored in a PostgresSQL database and will be accessed on future logins.
 
