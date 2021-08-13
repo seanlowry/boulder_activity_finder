@@ -1,6 +1,6 @@
 # Boulder Activity Finder
 
-This project had been initially implemented as a project for CSCI 3308 at UCB.  I have cloned it into my own repository on August 12, 2021 to continue work.
+This project had been initially implemented as a project for CSCI 3308 at UCB.  I have cloned it into my own repository to continue work on August 12, 2021.
 
 Users will first be directed to a login screen where they will have the option to create an account or login.  The user info entered on the registration page will be stored in a PostgresSQL database and will be accessed on future logins.
 
